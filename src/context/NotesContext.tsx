@@ -10,10 +10,13 @@ interface NotesContextType {
   searchQuery: string;
   selectedTagId: string | null;
   view: 'all' | 'archived';
+  isDeleting: boolean;
   setActiveNoteId: (id: string | null) => void;
   setSearchQuery: (query: string) => void;
   setSelectedTagId: (id: string | null) => void;
   setView: (view: 'all' | 'archived') => void;
+  openDeleteModal: (id: string) => void;
+  closeDeleteModal: () => void;
   createNote: () => void;
   updateNote: (id: string, updates: Partial<Note>) => void;
   deleteNote: (id: string) => void;
@@ -46,6 +49,12 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   let view: 'all' | 'archived' = 'all';
   let selectedTagId: string | null = null;
   let activeNoteId: string | null = null;
+  let isDeleting = false;
+
+  if (segments[segments.length - 1] === 'delete') {
+    isDeleting = true;
+    segments.pop(); // Remove 'delete' to parse the rest
+  }
 
   if (segments[0] === 'archived') {
     view = 'archived';
@@ -81,7 +90,7 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       .sort((a, b) => new Date(b.lastEdited).getTime() - new Date(a.lastEdited).getTime());
   }, [notes, searchQuery, selectedTagId, view]);
 
-  const setActiveNoteId = (id: string | null) => {
+  const getPathForNote = (id: string | null, action?: 'delete') => {
     let newPath = '/';
     if (view === 'archived') {
       newPath = id ? `/archived/${id}` : '/archived';
@@ -90,7 +99,24 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } else {
       newPath = id ? `/${id}` : '/';
     }
-    navigate(`${newPath}${location.search}`);
+    
+    if (action === 'delete' && id) {
+      newPath += '/delete';
+    }
+    
+    return `${newPath}${location.search}`;
+  };
+
+  const setActiveNoteId = (id: string | null) => {
+    navigate(getPathForNote(id));
+  };
+
+  const openDeleteModal = (id: string) => {
+    navigate(getPathForNote(id, 'delete'));
+  };
+
+  const closeDeleteModal = () => {
+    navigate(getPathForNote(activeNoteId));
   };
 
   const setSearchQuery = (query: string) => {
@@ -139,10 +165,9 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const deleteNote = (id: string) => {
-    if (confirm('Are you sure?')) {
-      setNotes((prev) => prev.filter((n) => n.id !== id));
-      if (activeNoteId === id) setActiveNoteId(null);
-    }
+    setNotes((prev) => prev.filter((n) => n.id !== id));
+    if (activeNoteId === id) setActiveNoteId(null);
+    else closeDeleteModal();
   };
 
   const archiveNote = (id: string) => {
@@ -173,10 +198,13 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         searchQuery,
         selectedTagId,
         view,
+        isDeleting,
         setActiveNoteId,
         setSearchQuery,
         setSelectedTagId,
         setView,
+        openDeleteModal,
+        closeDeleteModal,
         createNote,
         updateNote,
         deleteNote,

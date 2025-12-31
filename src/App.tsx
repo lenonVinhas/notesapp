@@ -2,6 +2,7 @@ import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { NoteList } from './components/NoteList';
 import { NoteEditor } from './components/NoteEditor';
+import { DeleteModal } from './components/DeleteModal';
 import { NotesProvider } from './context/NotesContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { BrowserRouter } from 'react-router-dom';
@@ -22,6 +23,7 @@ function App() {
                 <NoteEditor />
               </main>
             </div>
+            <DeleteModal />
           </div>
         </NotesProvider>
       </LanguageProvider>

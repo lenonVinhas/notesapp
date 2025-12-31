@@ -5,7 +5,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { cn } from '../utils/cn';
 
 export const NoteEditor: React.FC = () => {
-  const { allNotes, tags, activeNoteId, updateNote, archiveNote, unarchiveNote, deleteNote, addTag, setActiveNoteId } = useNotes();
+  const { allNotes, tags, activeNoteId, updateNote, archiveNote, unarchiveNote, openDeleteModal, addTag, setActiveNoteId } = useNotes();
   const { t } = useLanguage();
   const [newTagName, setNewTagName] = useState('');
 
@@ -133,7 +133,7 @@ export const NoteEditor: React.FC = () => {
         </button>
         <div className="h-px bg-zinc-100 mx-2" />
         <button
-          onClick={() => deleteNote(note.id)}
+          onClick={() => openDeleteModal(note.id)}
           className="p-3 text-zinc-400 hover:bg-red-50 hover:text-red-600 rounded-lg transition-all relative group/btn"
           title={t('deleteNote')}
         >
