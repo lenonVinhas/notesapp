@@ -27,6 +27,11 @@ const translations: Translations = {
     noNotes: 'No notes found',
     titlePlaceholder: 'Note title',
     contentPlaceholder: 'Start writing...',
+    searchInAll: 'Searching in All Notes',
+    searchInArchived: 'Searching in Archived',
+    searchResults: 'results',
+    clearSearch: 'Clear',
+    noResultsFound: 'No results found for',
     confirmDelete: 'Are you sure you want to delete this note?',
   },
   pt: {
@@ -48,6 +53,11 @@ const translations: Translations = {
     noNotes: 'Nenhuma nota encontrada',
     titlePlaceholder: 'Título da nota',
     contentPlaceholder: 'Comece a escrever...',
+    searchInAll: 'Pesquisando em Todas as notas',
+    searchInArchived: 'Pesquisando em Arquivadas',
+    searchResults: 'resultados',
+    clearSearch: 'Limpar',
+    noResultsFound: 'Nenhum resultado encontrado para',
     confirmDelete: 'Tem certeza que deseja excluir esta nota?',
   },
 };

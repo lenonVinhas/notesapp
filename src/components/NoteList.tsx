@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Tag as TagIcon } from 'lucide-react';
+import { Plus, Tag as TagIcon, Search } from 'lucide-react';
 import { useNotes } from '../context/NotesContext';
 import { useLanguage } from '../context/LanguageContext';
 import { cn } from '../utils/cn';
@@ -38,8 +38,18 @@ export const NoteList: React.FC = () => {
 
       <div className="flex-1 overflow-y-auto">
         {notes.length === 0 ? (
-          <div className="p-8 text-center text-zinc-400 text-sm">
-            {t('noNotes')}
+          <div className="p-8 text-center animate-in fade-in slide-in-from-top-4 duration-500">
+            <div className="bg-zinc-50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Search className="w-6 h-6 text-zinc-300" />
+            </div>
+            <p className="text-zinc-900 font-medium text-sm mb-1">
+              {useNotes().searchQuery ? t('noResultsFound') : t('noNotes')}
+            </p>
+            {useNotes().searchQuery && (
+              <p className="text-zinc-400 text-xs italic line-clamp-2">
+                "{useNotes().searchQuery}"
+              </p>
+            )}
           </div>
         ) : (
           notes.map((note) => (
