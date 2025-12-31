@@ -37,6 +37,11 @@ const translations: Translations = {
     selectNote: 'Select a note to view or create a new one',
     noNotesSelected: 'Start your journey',
     selectNoteDescription: 'Select a note from the list to view it or create a new one right now.',
+    deleteTagConfirm: 'Are you sure you want to delete this tag?',
+    editTag: 'Edit tag',
+    deleteTag: 'Delete tag',
+    addTagPlaceholder: '+ tag',
+    pressEnterToCreate: 'Press Enter to create',
   },
   pt: {
     allNotes: 'Todas as notas',
@@ -67,6 +72,11 @@ const translations: Translations = {
     selectNote: 'Selecione uma nota para visualizar ou crie uma nova',
     noNotesSelected: 'Inicie sua jornada',
     selectNoteDescription: 'Selecione uma nota da lista ao lado para visualizá-la ou crie algo novo agora mesmo.',
+    deleteTagConfirm: 'Tem certeza que deseja excluir esta tag?',
+    editTag: 'Editar tag',
+    deleteTag: 'Excluir tag',
+    addTagPlaceholder: '+ tag',
+    pressEnterToCreate: 'Pressione Enter para criar',
   },
 };
 

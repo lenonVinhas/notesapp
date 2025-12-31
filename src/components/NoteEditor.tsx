@@ -8,6 +8,7 @@ export const NoteEditor: React.FC = () => {
   const { allNotes, tags, activeNoteId, updateNote, archiveNote, unarchiveNote, openDeleteModal, addTag, setActiveNoteId, deleteNote } = useNotes();
   const { t } = useLanguage();
   const [newTagName, setNewTagName] = useState('');
+  const [selectedIndex, setSelectedIndex] = useState(0);
   
   // Track initial state for "Undo" functionality when clicking Cancel
   const initialStateRef = React.useRef<{ title: string; content: string; lastEdited: string } | null>(null);
@@ -50,6 +51,49 @@ export const NoteEditor: React.FC = () => {
       </div>
     );
   }
+
+  const addExistingTag = (tagId: string) => {
+    if (!note.tags.includes(tagId)) {
+      updateNote(note.id, { tags: [...note.tags, tagId] });
+    }
+    setNewTagName('');
+    setSelectedIndex(0);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!newTagName) return;
+
+    const suggestions = tags.filter(t => 
+      t.name.toLowerCase().includes(newTagName.toLowerCase()) && 
+      !note.tags.includes(t.id)
+    );
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelectedIndex(prev => (prev + 1) % (suggestions.length + 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelectedIndex(prev => (prev - 1 + (suggestions.length + 1)) % (suggestions.length + 1));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (selectedIndex < suggestions.length) {
+        addExistingTag(suggestions[selectedIndex].id);
+      } else {
+        // Create new tag
+        if (newTagName.trim()) {
+           const tag = addTag(newTagName.trim());
+           if (!note.tags.includes(tag.id)) {
+              updateNote(note.id, { tags: [...note.tags, tag.id] });
+           }
+           setNewTagName('');
+           setSelectedIndex(0);
+        }
+      }
+    } else if (e.key === 'Escape') {
+      setNewTagName('');
+      setSelectedIndex(0);
+    }
+  };
 
   const handleAddTag = (e: React.FormEvent) => {
     e.preventDefault();
@@ -129,15 +173,54 @@ export const NoteEditor: React.FC = () => {
                     </button>
                   </span>
                 ))}
-                <form onSubmit={handleAddTag} className="inline-block">
-                  <input
-                    type="text"
-                    value={newTagName}
-                    onChange={e => setNewTagName(e.target.value)}
-                    className="text-sm outline-none border-b border-zinc-200 focus:border-zinc-900 bg-transparent py-0.5 px-1 w-24"
-                    placeholder="+ tag..."
-                  />
-                </form>
+                <div className="relative inline-block">
+                  <form onSubmit={handleAddTag} className="flex items-center">
+                    <input
+                      type="text"
+                      value={newTagName}
+                      onChange={e => {
+                        setNewTagName(e.target.value);
+                        setSelectedIndex(0);
+                      }}
+                      onKeyDown={handleKeyDown}
+                      onBlur={() => {
+                        // Delay hiding suggestions to allow clicking
+                        setTimeout(() => setNewTagName(''), 200);
+                      }}
+                      className="text-sm outline-none border-b border-zinc-200 focus:border-zinc-900 bg-transparent py-0.5 px-1 w-24 placeholder:text-zinc-300"
+                      placeholder={t('addTagPlaceholder')}
+                    />
+                  </form>
+                  {/* Autocomplete Suggestions */}
+                  {newTagName && (
+                    <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-zinc-200 rounded-lg shadow-xl z-20 overflow-hidden">
+                      {tags
+                        .filter(t => t.name.toLowerCase().includes(newTagName.toLowerCase()) && !note.tags.includes(t.id))
+                        .map((tag, index) => (
+                          <button
+                            key={tag.id}
+                            className={cn(
+                              "w-full text-left px-3 py-2 text-sm hover:bg-zinc-50 transition-colors flex items-center gap-2",
+                              index === selectedIndex && "bg-zinc-100"
+                            )}
+                            onMouseDown={(e) => {
+                              e.preventDefault(); // Prevent blur
+                              addExistingTag(tag.id);
+                            }}
+                          >
+                            <TagIcon className="w-3 h-3 text-zinc-400" />
+                            <span className="truncate">{tag.name}</span>
+                          </button>
+                        ))
+                      }
+                      {newTagName && !tags.some(t => t.name.toLowerCase() === newTagName.toLowerCase()) && (
+                        <div className="px-3 py-2 text-xs text-zinc-400 border-t border-zinc-50 bg-zinc-50/50">
+                          {t('pressEnterToCreate')} "{newTagName}"
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 

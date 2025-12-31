@@ -105,4 +105,47 @@ describe('useNotesManager', () => {
         expect(result.current.tags).toHaveLength(1);
         expect(returnedTag).toEqual(existingTag);
     });
+
+    it('should update a tag', () => {
+        const initialTag = { id: 't1', name: 'OldTag' };
+        vi.mocked(StorageService.get).mockReturnValue([initialTag]);
+        const { result } = renderHook(() => useNotesManager());
+
+        act(() => {
+            result.current.updateTag('t1', 'NewTag');
+        });
+
+        expect(result.current.tags[0].name).toBe('NewTag');
+        expect(StorageService.set).toHaveBeenCalledWith('notes-app-tags', expect.arrayContaining([expect.objectContaining({ name: 'NewTag' })]));
+    });
+
+    it('should delete a tag and remove it from notes', () => {
+        const tagId = 't1';
+        const tag = { id: tagId, name: 'TagToDelete' };
+        const noteWithTag = {
+            id: 'n1',
+            title: 'Note',
+            content: '',
+            tags: [tagId, 'other-tag'],
+            lastEdited: '',
+            isArchived: false
+        };
+
+        vi.mocked(StorageService.get).mockImplementation((key: string) => {
+            if (key === 'notes-app-tags') return [tag];
+            if (key === 'notes-app-data') return [noteWithTag];
+            return [];
+        });
+
+        const { result } = renderHook(() => useNotesManager());
+
+        act(() => {
+            result.current.deleteTag(tagId);
+        });
+
+        expect(result.current.tags).toHaveLength(0);
+        expect(result.current.notes[0].tags).toEqual(['other-tag']);
+        expect(StorageService.set).toHaveBeenCalledWith('notes-app-tags', []);
+        expect(StorageService.set).toHaveBeenCalledWith('notes-app-data', expect.arrayContaining([expect.objectContaining({ tags: ['other-tag'] })]));
+    });
 });

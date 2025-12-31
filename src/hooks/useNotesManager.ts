@@ -67,6 +67,20 @@ export const useNotesManager = () => {
         return newTag;
     };
 
+    const updateTag = (id: string, name: string) => {
+        setTags((prev) => prev.map((t) => (t.id === id ? { ...t, name } : t)));
+    };
+
+    const deleteTag = (id: string) => {
+        setTags((prev) => prev.filter((t) => t.id !== id));
+        setNotes((prev) =>
+            prev.map((n) => ({
+                ...n,
+                tags: n.tags.filter((tId) => tId !== id),
+            }))
+        );
+    };
+
     return {
         notes,
         tags,
@@ -76,5 +90,7 @@ export const useNotesManager = () => {
         archiveNote,
         unarchiveNote,
         addTag,
+        updateTag,
+        deleteTag,
     };
 };

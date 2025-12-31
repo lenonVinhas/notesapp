@@ -24,6 +24,8 @@ interface NotesContextType {
   archiveNote: (id: string) => void;
   unarchiveNote: (id: string) => void;
   addTag: (name: string) => Tag;
+  updateTag: (id: string, name: string) => void;
+  deleteTag: (id: string) => void;
 }
 
 const NotesContext = createContext<NotesContextType | undefined>(undefined);
@@ -91,6 +93,8 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         archiveNote,
         unarchiveNote: manager.unarchiveNote,
         addTag: manager.addTag,
+        updateTag: manager.updateTag,
+        deleteTag: manager.deleteTag,
       }}
     >
       {children}
