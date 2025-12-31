@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { Language } from '../types/note';
+import { StorageService, STORAGE_KEYS } from '../services/storage';
 
 interface Translations {
   [key: string]: {
@@ -47,6 +48,7 @@ const translations: Translations = {
     saveNote: 'Salvar nota',
     cancel: 'Cancelar',
     searchPlaceholder: 'Pesquisar...',
+    lookingFor: 'Procurando por',
     minutesAgo: 'minutos atrás',
     today: 'Hoje',
     yesterday: 'Ontem',
@@ -73,13 +75,12 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>(() => {
-    const saved = localStorage.getItem('notes-app-language');
-    return (saved as Language) || 'en';
-  });
+  const [language, setLanguage] = useState<Language>(() => 
+    StorageService.get<Language>(STORAGE_KEYS.LANGUAGE, 'en')
+  );
 
   useEffect(() => {
-    localStorage.setItem('notes-app-language', language);
+    StorageService.set(STORAGE_KEYS.LANGUAGE, language);
   }, [language]);
 
   const t = (key: string) => {
