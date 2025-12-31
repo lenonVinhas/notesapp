@@ -97,7 +97,7 @@ export const NoteEditor: React.FC = () => {
 
           <div className="flex flex-col gap-4 mb-8">
             <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2 text-sm text-zinc-400 w-24 shrink-0">
+              <div className="flex items-center gap-2 text-sm text-zinc-400 w-32 shrink-0 whitespace-nowrap">
                 <TagIcon className="w-4 h-4" />
                 <span>{t('tags')}</span>
               </div>
@@ -123,7 +123,7 @@ export const NoteEditor: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-6 text-sm text-zinc-400">
-              <div className="flex items-center gap-2 w-24 shrink-0">
+              <div className="flex items-center gap-2 w-32 shrink-0 whitespace-nowrap">
                 <Clock className="w-4 h-4" />
                 <span>{t('lastEdited')}</span>
               </div>
