@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Search, StickyNote } from 'lucide-react';
+import { Plus, Search, FileText } from 'lucide-react';
 import { useNotes } from '../context/NotesContext';
 import { useLanguage } from '../context/LanguageContext';
 import { cn } from '../utils/cn';
@@ -43,14 +43,11 @@ export const NoteList: React.FC = () => {
               {searchQuery ? (
                 <Search className="w-6 h-6 text-zinc-300" />
               ) : (
-                <StickyNote className="w-6 h-6 text-zinc-300" />
+                <FileText className="w-6 h-6 text-zinc-300" />
               )}
             </div>
             <p className="text-zinc-900 font-medium text-sm mb-1 mt-2">
-              {useNotes().searchQuery ? t('noResultsFound') : t('noNotesSelected')}
-            </p>
-            <p className="text-zinc-500 text-xs px-6 leading-relaxed">
-              {useNotes().searchQuery ? "" : t('selectNoteDescription')}
+              {useNotes().searchQuery ? t('noResultsFound') : t('selectNote')}
             </p>
             {useNotes().searchQuery && (
               <p className="text-zinc-400 text-xs italic line-clamp-2">

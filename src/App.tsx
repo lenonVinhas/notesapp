@@ -23,7 +23,7 @@ function AppContent() {
         <main className="flex-1 flex overflow-hidden relative">
           <div className={cn(
             "h-full overflow-hidden shrink-0",
-            activeNoteId ? "hidden md:block" : "block w-full"
+            activeNoteId ? "hidden md:block" : "block w-full md:w-auto"
           )}>
             <NoteList />
           </div>

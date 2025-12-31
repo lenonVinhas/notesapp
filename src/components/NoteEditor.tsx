@@ -41,10 +41,10 @@ export const NoteEditor: React.FC = () => {
         </div>
         <div className="text-center max-w-sm">
           <h3 className="text-xl font-semibold text-zinc-900 mb-2 tracking-tight">
-            {t('noNotesSelected') || 'Inicie sua jornada'}
+            {t('noNotesSelected')}
           </h3>
           <p className="text-zinc-500 leading-relaxed">
-            {t('selectNoteDescription') || 'Selecione uma nota da lista ao lado para visualizá-la ou crie algo novo agora mesmo.'}
+            {t('selectNoteDescription')}
           </p>
         </div>
       </div>
