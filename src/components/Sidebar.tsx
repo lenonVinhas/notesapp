@@ -1,72 +1,111 @@
 import React from 'react';
-import { Home, Archive, Tag, Files } from 'lucide-react';
+import { Home, Archive, Tag, Files, X } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useNotes } from '../context/NotesContext';
 import { useLanguage } from '../context/LanguageContext';
 import { cn } from '../utils/cn';
 
-export const Sidebar: React.FC = () => {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { tags } = useNotes();
   const { t } = useLanguage();
   const { search } = useLocation();
 
   return (
-    <aside className="w-64 border-r border-zinc-200 h-screen flex flex-col bg-white">
-      <div className="p-6">
-        <NavLink to={`/${search}`} className="flex items-center gap-2 mb-8 no-underline text-inherit">
-          <Files className="w-6 h-6" />
-          <h1 className="text-xl font-bold">NotesApp</h1>
-        </NavLink>
+    <>
+      {/* Overlay for mobile/tablet */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-zinc-900/20 backdrop-blur-sm z-40 lg:hidden"
+          onClick={onClose}
+        />
+      )}
 
-        <nav className="space-y-1">
-          <NavLink
-            to={`/${search}`}
-            end
-            className={({ isActive }) => cn(
-              "w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors",
-              isActive ? "bg-zinc-100 text-zinc-900" : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
-            )}
-          >
-            <div className="flex items-center gap-3">
-              <Home className="w-4 h-4" />
-              {t('allNotes')}
-            </div>
-          </NavLink>
-          
-          <NavLink
-            to={`/archived${search}`}
-            className={({ isActive }) => cn(
-              "w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors",
-              isActive ? "bg-zinc-100 text-zinc-900" : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
-            )}
-          >
-            <Archive className="w-4 h-4" />
-            {t('archivedNotes')}
-          </NavLink>
-        </nav>
-
-        <div className="mt-8">
-          <div className="flex items-center gap-2 px-3 mb-2">
-             <Tag className="w-4 h-4 text-zinc-400" />
-             <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">{t('tags')}</span>
+      <aside className={cn(
+        "fixed lg:static inset-y-0 left-0 w-64 border-r border-zinc-200 h-screen flex flex-col bg-white z-50 transition-transform duration-300 lg:translate-x-0 shrink-0",
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      )}>
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-8">
+            <NavLink to={`/${search}`} className="flex items-center gap-2 no-underline text-inherit" onClick={onClose}>
+              <Files className="w-6 h-6" />
+              <h1 className="text-xl font-bold">NotesApp</h1>
+            </NavLink>
+            <button onClick={onClose} className="p-2 -mr-2 text-zinc-400 hover:text-zinc-600 lg:hidden">
+              <X className="w-5 h-5" />
+            </button>
           </div>
-          <div className="space-y-1">
-            {tags.map((tag) => (
-              <NavLink
-                key={tag.id}
-                to={`/tags/${tag.id}${search}`}
-                className={({ isActive }) => cn(
-                  "w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors text-left",
-                  isActive ? "bg-zinc-100 text-zinc-900" : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
-                )}
-              >
-                <div className="w-1.5 h-1.5 rounded-full bg-zinc-300" />
-                <span className="truncate">{tag.name}</span>
-              </NavLink>
-            ))}
+
+          <nav className="space-y-1.5">
+            <NavLink
+              to={`/${search}`}
+              end
+              onClick={onClose}
+              className={({ isActive }) => cn(
+                "w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200",
+                isActive ? "bg-zinc-900 text-white shadow-lg shadow-zinc-100" : "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900"
+              )}
+            >
+              {({ isActive }) => (
+                <div className="flex items-center gap-3">
+                  <Home className={cn("w-4 h-4", isActive ? "text-white" : "text-zinc-400")} />
+                  {t('allNotes')}
+                </div>
+              )}
+            </NavLink>
+            
+            <NavLink
+              to={`/archived${search}`}
+              onClick={onClose}
+              className={({ isActive }) => cn(
+                "w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200",
+                isActive ? "bg-zinc-900 text-white shadow-lg shadow-zinc-100" : "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900"
+              )}
+            >
+              {({ isActive }) => (
+                <>
+                  <Archive className={cn("w-4 h-4", isActive ? "text-white" : "text-zinc-400")} />
+                  {t('archivedNotes')}
+                </>
+              )}
+            </NavLink>
+          </nav>
+
+          <div className="mt-10">
+            <div className="flex items-center gap-2 px-4 mb-4">
+               <Tag className="w-3.5 h-3.5 text-zinc-400" />
+               <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-[0.1em]">{t('tags')}</span>
+            </div>
+            <div className="space-y-1">
+              {tags.map((tag) => (
+                <NavLink
+                  key={tag.id}
+                  to={`/tags/${tag.id}${search}`}
+                  onClick={onClose}
+                  className={({ isActive }) => cn(
+                    "w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 text-left",
+                    isActive ? "bg-zinc-100 text-zinc-900" : "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900"
+                  )}
+                >
+                  {({ isActive }) => (
+                    <>
+                      <div className={cn(
+                        "w-1.5 h-1.5 rounded-full transition-colors",
+                        isActive ? "bg-zinc-900" : "bg-zinc-300"
+                      )} />
+                      <span className="truncate">{tag.name}</span>
+                    </>
+                  )}
+                </NavLink>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 };

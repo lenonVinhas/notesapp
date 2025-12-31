@@ -35,6 +35,8 @@ const translations: Translations = {
     noResultsFound: 'No results found for',
     confirmDelete: 'Are you sure you want to delete this note?',
     selectNote: 'Select a note to view or create a new one',
+    noNotesSelected: 'Start your journey',
+    selectNoteDescription: 'Select a note from the list to view it or create a new one right now.',
   },
   pt: {
     allNotes: 'Todas as notas',
@@ -63,6 +65,8 @@ const translations: Translations = {
     noResultsFound: 'Nenhum resultado encontrado para',
     confirmDelete: 'Tem certeza que deseja excluir esta nota?',
     selectNote: 'Selecione uma nota para visualizar ou crie uma nova',
+    noNotesSelected: 'Inicie sua jornada',
+    selectNoteDescription: 'Selecione uma nota da lista ao lado para visualizá-la ou crie algo novo agora mesmo.',
   },
 };
 

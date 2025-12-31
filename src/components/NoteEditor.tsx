@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Archive, Trash2, Tag as TagIcon, Clock, X, RotateCcw } from 'lucide-react';
+import { Archive, Trash2, Tag as TagIcon, Clock, X, RotateCcw, ChevronLeft, StickyNote } from 'lucide-react';
 import { useNotes } from '../context/NotesContext';
 import { useLanguage } from '../context/LanguageContext';
 import { cn } from '../utils/cn';
@@ -32,11 +32,21 @@ export const NoteEditor: React.FC = () => {
 
   if (!note) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-12 text-zinc-400 bg-zinc-50">
-        <div className="bg-white p-6 rounded-full shadow-sm mb-4">
-           <Clock className="w-12 h-12 text-zinc-100" />
+      <div className="flex-1 flex flex-col items-center justify-center p-12 bg-[#FBFBFB] selection:bg-zinc-200">
+        <div className="relative mb-8">
+          <div className="absolute inset-0 bg-zinc-200 blur-3xl opacity-20 rounded-full scale-150 animate-pulse" />
+          <div className="relative bg-white p-8 rounded-[2rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] border border-zinc-100 group-hover:scale-105 transition-transform duration-500">
+             <StickyNote className="w-16 h-16 text-zinc-200" strokeWidth={1.5} />
+          </div>
         </div>
-        <p className="text-zinc-500 font-medium">{t('selectNote') || 'Select a note to view or create a new one'}</p>
+        <div className="text-center max-w-sm">
+          <h3 className="text-xl font-semibold text-zinc-900 mb-2 tracking-tight">
+            {t('noNotesSelected') || 'Inicie sua jornada'}
+          </h3>
+          <p className="text-zinc-500 leading-relaxed">
+            {t('selectNoteDescription') || 'Selecione uma nota da lista ao lado para visualizá-la ou crie algo novo agora mesmo.'}
+          </p>
+        </div>
       </div>
     );
   }
@@ -84,8 +94,17 @@ export const NoteEditor: React.FC = () => {
     <div className="flex-1 flex bg-white overflow-hidden relative group">
       {/* Main Editor Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="p-8 pb-4">
-          <div className="mb-8 pr-16"> {/* pr-16 to leave space for floating actions */}
+        <div className="p-4 md:p-8 pb-4">
+          <div className="md:hidden mb-4">
+            <button 
+              onClick={() => setActiveNoteId(null)}
+              className="flex items-center gap-1 text-zinc-500 hover:text-zinc-900 text-sm font-medium"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              {t('allNotes')}
+            </button>
+          </div>
+          <div className="mb-4 md:mb-8 pr-16 text-pretty">
             <input
               type="text"
               className="text-3xl font-bold text-zinc-900 border-none outline-none placeholder:text-zinc-200 w-full"
@@ -95,8 +114,8 @@ export const NoteEditor: React.FC = () => {
             />
           </div>
 
-          <div className="flex flex-col gap-4 mb-8">
-            <div className="flex items-center gap-6">
+            <div className="flex flex-col gap-4 mb-4 md:mb-8">
+            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6">
               <div className="flex items-center gap-2 text-sm text-zinc-400 w-32 shrink-0 whitespace-nowrap">
                 <TagIcon className="w-4 h-4" />
                 <span>{t('tags')}</span>
@@ -122,12 +141,12 @@ export const NoteEditor: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-6 text-sm text-zinc-400">
-              <div className="flex items-center gap-2 w-32 shrink-0 whitespace-nowrap">
+            <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-6 text-sm text-zinc-400">
+              <div className="flex items-center gap-2 md:w-32 shrink-0 whitespace-nowrap">
                 <Clock className="w-4 h-4" />
                 <span>{t('lastEdited')}</span>
               </div>
-              <span className="font-medium text-zinc-500">{new Date(note.lastEdited).toLocaleString()}</span>
+              <span className="font-medium text-zinc-500 truncate">{new Date(note.lastEdited).toLocaleString()}</span>
             </div>
           </div>
         </div>
@@ -158,7 +177,7 @@ export const NoteEditor: React.FC = () => {
       </div>
 
       {/* Floating Action Bar - UX Optimized */}
-      <div className="absolute right-6 top-8 flex flex-col gap-2 p-1.5 bg-white/80 backdrop-blur-md border border-zinc-200 rounded-xl shadow-xl transition-all opacity-40 group-hover:opacity-100 hover:scale-105">
+      <div className="absolute right-4 md:right-6 top-16 md:top-8 flex flex-col gap-2 p-1.5 bg-white/80 backdrop-blur-md border border-zinc-200 rounded-xl shadow-xl transition-all opacity-40 group-hover:opacity-100 hover:scale-105 z-10">
         <button
           onClick={() => note.isArchived ? unarchiveNote(note.id) : archiveNote(note.id)}
           className={cn(

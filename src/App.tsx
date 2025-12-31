@@ -3,28 +3,49 @@ import { Header } from './components/Header';
 import { NoteList } from './components/NoteList';
 import { NoteEditor } from './components/NoteEditor';
 import { DeleteModal } from './components/DeleteModal';
-import { NotesProvider } from './context/NotesContext';
+import { NotesProvider, useNotes } from './context/NotesContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { BrowserRouter } from 'react-router-dom';
+import { useState } from 'react';
+import { cn } from './utils/cn';
+
+function AppContent() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { activeNoteId } = useNotes();
+
+  return (
+    <div className="flex h-screen bg-zinc-50 overflow-hidden font-sans relative">
+      <Sidebar isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+      
+      <div className="flex-1 flex flex-col min-w-0">
+        <Header onMenuClick={() => setIsMobileMenuOpen(true)} />
+        
+        <main className="flex-1 flex overflow-hidden relative">
+          <div className={cn(
+            "h-full overflow-hidden shrink-0",
+            activeNoteId ? "hidden md:block" : "block w-full"
+          )}>
+            <NoteList />
+          </div>
+          <div className={cn(
+            "flex-1 min-w-0 h-full overflow-hidden",
+            activeNoteId ? "block" : "hidden md:block"
+          )}>
+            <NoteEditor />
+          </div>
+        </main>
+      </div>
+      <DeleteModal />
+    </div>
+  );
+}
 
 function App() {
   return (
     <BrowserRouter>
       <LanguageProvider>
         <NotesProvider>
-          <div className="flex h-screen bg-zinc-50 overflow-hidden font-sans">
-            <Sidebar />
-            
-            <div className="flex-1 flex flex-col min-w-0">
-              <Header />
-              
-              <main className="flex-1 flex overflow-hidden">
-                <NoteList />
-                <NoteEditor />
-              </main>
-            </div>
-            <DeleteModal />
-          </div>
+          <AppContent />
         </NotesProvider>
       </LanguageProvider>
     </BrowserRouter>
