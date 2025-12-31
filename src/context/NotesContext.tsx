@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import type { Note, Tag } from '../types/note';
 
 interface NotesContextType {
@@ -34,10 +35,28 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return saved ? JSON.parse(saved) : [];
   });
 
-  const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedTagId, setSelectedTagId] = useState<string | null>(null);
-  const [view, setView] = useState<'all' | 'archived'>('all');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // URL derived state
+  const searchQuery = searchParams.get('q') || '';
+  
+  const segments = location.pathname.split('/').filter(Boolean);
+  let view: 'all' | 'archived' = 'all';
+  let selectedTagId: string | null = null;
+  let activeNoteId: string | null = null;
+
+  if (segments[0] === 'archived') {
+    view = 'archived';
+    activeNoteId = segments[1] || null;
+  } else if (segments[0] === 'tags') {
+    selectedTagId = segments[1] || null;
+    activeNoteId = segments[2] || null;
+  } else {
+    view = 'all';
+    activeNoteId = segments[0] || null;
+  }
 
   useEffect(() => {
     localStorage.setItem('notes-app-data', JSON.stringify(notes));
@@ -61,6 +80,44 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       })
       .sort((a, b) => new Date(b.lastEdited).getTime() - new Date(a.lastEdited).getTime());
   }, [notes, searchQuery, selectedTagId, view]);
+
+  const setActiveNoteId = (id: string | null) => {
+    let newPath = '/';
+    if (view === 'archived') {
+      newPath = id ? `/archived/${id}` : '/archived';
+    } else if (selectedTagId) {
+      newPath = id ? `/tags/${selectedTagId}/${id}` : `/tags/${selectedTagId}`;
+    } else {
+      newPath = id ? `/${id}` : '/';
+    }
+    navigate(`${newPath}${location.search}`);
+  };
+
+  const setSearchQuery = (query: string) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (query) {
+      newParams.set('q', query);
+    } else {
+      newParams.delete('q');
+    }
+    setSearchParams(newParams);
+  };
+
+  const setSelectedTagId = (id: string | null) => {
+    if (id) {
+      navigate(`/tags/${id}${location.search}`);
+    } else {
+      navigate(`/${location.search}`);
+    }
+  };
+
+  const setView = (v: 'all' | 'archived') => {
+    if (v === 'archived') {
+      navigate(`/archived${location.search}`);
+    } else {
+      navigate(`/${location.search}`);
+    }
+  };
 
   const createNote = () => {
     const newNote: Note = {
