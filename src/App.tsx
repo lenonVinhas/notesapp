@@ -28,8 +28,8 @@ function AppContent() {
             <NoteList />
           </div>
           <div className={cn(
-            "flex-1 min-w-0 h-full overflow-hidden",
-            activeNoteId ? "block" : "hidden md:block"
+            "flex-1 min-w-0 h-full overflow-hidden flex flex-col",
+            activeNoteId ? "flex" : "hidden md:flex"
           )}>
             <NoteEditor />
           </div>
