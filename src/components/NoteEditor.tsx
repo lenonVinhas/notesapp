@@ -5,11 +5,30 @@ import { useLanguage } from '../context/LanguageContext';
 import { cn } from '../utils/cn';
 
 export const NoteEditor: React.FC = () => {
-  const { allNotes, tags, activeNoteId, updateNote, archiveNote, unarchiveNote, openDeleteModal, addTag, setActiveNoteId } = useNotes();
+  const { allNotes, tags, activeNoteId, updateNote, archiveNote, unarchiveNote, openDeleteModal, addTag, setActiveNoteId, deleteNote } = useNotes();
   const { t } = useLanguage();
   const [newTagName, setNewTagName] = useState('');
+  
+  // Track initial state for "Undo" functionality when clicking Cancel
+  const initialStateRef = React.useRef<{ title: string; content: string; lastEdited: string } | null>(null);
+  const lastNoteIdRef = React.useRef<string | null>(null);
 
   const note = allNotes.find((n) => n.id === activeNoteId);
+
+  // Capture initial state when a new note is opened
+  React.useEffect(() => {
+    if (activeNoteId && note && activeNoteId !== lastNoteIdRef.current) {
+      initialStateRef.current = {
+        title: note.title,
+        content: note.content,
+        lastEdited: note.lastEdited
+      };
+      lastNoteIdRef.current = activeNoteId;
+    } else if (!activeNoteId) {
+      initialStateRef.current = null;
+      lastNoteIdRef.current = null;
+    }
+  }, [activeNoteId, note?.id]);
 
   if (!note) {
     return (
@@ -17,7 +36,7 @@ export const NoteEditor: React.FC = () => {
         <div className="bg-white p-6 rounded-full shadow-sm mb-4">
            <Clock className="w-12 h-12 text-zinc-100" />
         </div>
-        <p className="text-zinc-500 font-medium">Select a note to view or create a new one</p>
+        <p className="text-zinc-500 font-medium">{t('selectNote') || 'Select a note to view or create a new one'}</p>
       </div>
     );
   }
@@ -35,6 +54,30 @@ export const NoteEditor: React.FC = () => {
 
   const removeTag = (tagId: string) => {
     updateNote(note.id, { tags: note.tags.filter(id => id !== tagId) });
+  };
+
+  const handleSave = () => {
+    // Changes are already saved via auto-save, just close the editor
+    setActiveNoteId(null);
+  };
+
+  const handleCancel = () => {
+    if (initialStateRef.current) {
+      const isNewNote = !initialStateRef.current.title && !initialStateRef.current.content && !note.tags.length;
+      
+      if (isNewNote) {
+        // If it was a brand new empty note, delete it
+        deleteNote(note.id);
+      } else {
+        // Revert to initial state including the timestamp
+        updateNote(note.id, {
+          title: initialStateRef.current.title,
+          content: initialStateRef.current.content,
+          lastEdited: initialStateRef.current.lastEdited
+        });
+      }
+    }
+    setActiveNoteId(null);
   };
 
   return (
@@ -101,13 +144,13 @@ export const NoteEditor: React.FC = () => {
         <div className="p-6 border-t border-zinc-100 bg-zinc-50/50 flex gap-3">
           <button
             className="px-6 py-2 bg-zinc-900 text-white rounded-lg text-sm font-medium hover:bg-zinc-800 transition-all hover:shadow-lg active:scale-95"
-            onClick={() => setActiveNoteId(null)}
+            onClick={handleSave}
           >
             {t('saveNote')}
           </button>
           <button
             className="px-6 py-2 bg-white border border-zinc-200 text-zinc-600 rounded-lg text-sm font-medium hover:bg-zinc-50 transition-all"
-            onClick={() => setActiveNoteId(null)}
+            onClick={handleCancel}
           >
             {t('cancel')}
           </button>

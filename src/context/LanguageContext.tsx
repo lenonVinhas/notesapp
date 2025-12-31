@@ -33,6 +33,7 @@ const translations: Translations = {
     clearSearch: 'Clear',
     noResultsFound: 'No results found for',
     confirmDelete: 'Are you sure you want to delete this note?',
+    selectNote: 'Select a note to view or create a new one',
   },
   pt: {
     allNotes: 'Todas as notas',
@@ -59,6 +60,7 @@ const translations: Translations = {
     clearSearch: 'Limpar',
     noResultsFound: 'Nenhum resultado encontrado para',
     confirmDelete: 'Tem certeza que deseja excluir esta nota?',
+    selectNote: 'Selecione uma nota para visualizar ou crie uma nova',
   },
 };
 

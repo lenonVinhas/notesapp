@@ -160,7 +160,15 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const updateNote = (id: string, updates: Partial<Note>) => {
     setNotes((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, ...updates, lastEdited: new Date().toISOString() } : n))
+      prev.map((n) =>
+        n.id === id
+          ? {
+              ...n,
+              ...updates,
+              lastEdited: updates.lastEdited || new Date().toISOString(),
+            }
+          : n
+      )
     );
   };
 
