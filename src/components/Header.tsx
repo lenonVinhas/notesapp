@@ -50,7 +50,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
             placeholder={t('searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-11 pr-11 py-2.5 bg-zinc-50 border-transparent border rounded-xl text-sm focus:ring-4 focus:ring-zinc-900/5 w-36 sm:w-56 md:w-72 outline-none transition-all focus:bg-white focus:border-zinc-200 focus:shadow-sm"
+            className="pl-11 pr-11 py-2.5 bg-zinc-50 border-transparent border rounded-xl text-sm focus:ring-4 focus:ring-zinc-900/5 w-48 sm:w-64 md:w-80 outline-none transition-all focus:bg-white focus:border-zinc-200 focus:shadow-sm"
           />
           {isSearching && (
             <button
