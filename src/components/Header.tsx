@@ -1,6 +1,8 @@
 import React from 'react';
 import { Search, Globe, X, Menu } from 'lucide-react';
-import { useNotes } from '../context/NotesContext';
+import { useNotesData } from '../context/NotesDataContext';
+import { useNotesUI } from '../context/NotesUIContext';
+import { useFilteredNotes } from '../hooks/useFilteredNotes';
 import { useLanguage } from '../context/LanguageContext';
 import { cn } from '../utils/cn';
 
@@ -9,7 +11,9 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
-  const { searchQuery, setSearchQuery, view, notes, selectedTagId, tags } = useNotes();
+  const { searchQuery, setSearchQuery, view, selectedTagId } = useNotesUI();
+  const { tags } = useNotesData();
+  const { filteredNotes: notes } = useFilteredNotes();
   const { t, language, setLanguage } = useLanguage();
 
   const isSearching = searchQuery.length > 0;

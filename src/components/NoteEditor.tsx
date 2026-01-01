@@ -1,79 +1,40 @@
 import React from 'react';
 import { Clock, ChevronLeft } from 'lucide-react';
-import { useNotes } from '../context/NotesContext';
+import { useNotesData } from '../context/NotesDataContext';
+import { useNotesUI } from '../context/NotesUIContext';
 import { useLanguage } from '../context/LanguageContext';
 import { TagInput } from './tags/TagInput';
 import { NoNoteSelected } from './notes/NoNoteSelected';
 import { NoteActions } from './notes/NoteActions';
+import { useNoteEditor } from '../hooks/useNoteEditor';
 
 export const NoteEditor: React.FC = () => {
-  const { allNotes, tags, activeNoteId, updateNote, archiveNote, unarchiveNote, openDeleteModal, addTag, setActiveNoteId, deleteNote } = useNotes();
+  const { tags, archiveNote, unarchiveNote } = useNotesData();
+  const { setActiveNoteId, openDeleteModal } = useNotesUI();
   const { t } = useLanguage();
   
-  // Track initial state for "Undo" functionality when clicking Cancel
-  const initialStateRef = React.useRef<{ title: string; content: string; lastEdited: string } | null>(null);
-  const lastNoteIdRef = React.useRef<string | null>(null);
-
-  const note = allNotes.find((n) => n.id === activeNoteId);
-
-  // Capture initial state when a new note is opened
-  React.useEffect(() => {
-    if (activeNoteId && note && activeNoteId !== lastNoteIdRef.current) {
-      initialStateRef.current = {
-        title: note.title,
-        content: note.content,
-        lastEdited: note.lastEdited
-      };
-      lastNoteIdRef.current = activeNoteId;
-    } else if (!activeNoteId) {
-      initialStateRef.current = null;
-      lastNoteIdRef.current = null;
-    }
-  }, [activeNoteId, note?.id]);
+  const { 
+    note, 
+    handleSave, 
+    handleCancel, 
+    addExistingTag, 
+    handleAddTag, 
+    removeTag, 
+    updateTitle, 
+    updateContent 
+  } = useNoteEditor();
 
   if (!note) {
     return <NoNoteSelected />;
   }
 
-  const addExistingTag = (tagId: string) => {
-    if (!note.tags.includes(tagId)) {
-      updateNote(note.id, { tags: [...note.tags, tagId] });
+  const handleArchive = () => {
+    if (note.isArchived) {
+      unarchiveNote(note.id);
+    } else {
+      archiveNote(note.id);
+      setActiveNoteId(null);
     }
-  };
-
-  const handleAddTag = (tagName: string) => {
-    const tag = addTag(tagName);
-    if (!note.tags.includes(tag.id)) {
-      updateNote(note.id, { tags: [...note.tags, tag.id] });
-    }
-  };
-
-  const removeTag = (tagId: string) => {
-    updateNote(note.id, { tags: note.tags.filter(id => id !== tagId) });
-  };
-
-  const handleSave = () => {
-    // Changes are already saved via auto-save, just close the editor
-    setActiveNoteId(null);
-  };
-
-  const handleCancel = () => {
-    if (initialStateRef.current) {
-      const isNewNote = !initialStateRef.current.title && !initialStateRef.current.content && !note.tags.length;
-      
-      if (isNewNote) {
-        // If it was a brand new empty note, delete it
-        deleteNote(note.id);
-      } else {
-        // Revert to initial state including the timestamp
-        updateNote(note.id, {
-          title: initialStateRef.current.title,
-          content: initialStateRef.current.content,
-          lastEdited: initialStateRef.current.lastEdited
-        });
-      }
-    }
-    setActiveNoteId(null);
   };
 
   return (
@@ -96,7 +57,7 @@ export const NoteEditor: React.FC = () => {
               className="text-3xl font-bold text-zinc-900 border-none outline-none placeholder:text-zinc-200 w-full"
               placeholder={t('titlePlaceholder')}
               value={note.title}
-              onChange={(e) => updateNote(note.id, { title: e.target.value })}
+              onChange={(e) => updateTitle(e.target.value)}
             />
           </div>
 
@@ -124,7 +85,7 @@ export const NoteEditor: React.FC = () => {
             className="w-full h-full resize-none border-none outline-none text-zinc-600 leading-relaxed placeholder:text-zinc-200"
             placeholder={t('contentPlaceholder')}
             value={note.content}
-            onChange={(e) => updateNote(note.id, { content: e.target.value })}
+            onChange={(e) => updateContent(e.target.value)}
           />
         </div>
 
@@ -147,7 +108,7 @@ export const NoteEditor: React.FC = () => {
       {/* Floating Action Bar - UX Optimized */}
       <NoteActions
         isArchived={note.isArchived}
-        onArchive={() => note.isArchived ? unarchiveNote(note.id) : archiveNote(note.id)}
+        onArchive={handleArchive}
         onDelete={() => openDeleteModal(note.id)}
       />
     </div>

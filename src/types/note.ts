@@ -12,4 +12,5 @@ export interface Note {
     isArchived: boolean;
 }
 
-export type Language = 'en' | 'pt';
+// Language type explicitly removed, should import from ../i18n if needed
+

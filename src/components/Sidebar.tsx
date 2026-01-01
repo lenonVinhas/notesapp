@@ -1,7 +1,7 @@
 import React from 'react';
 import { Home, Archive, Tag, Files, X } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { useNotes } from '../context/NotesContext';
+import { useNotesData } from '../context/NotesDataContext';
 import { useLanguage } from '../context/LanguageContext';
 import { cn } from '../utils/cn';
 import { TagItem } from './tags/TagItem';
@@ -12,7 +12,7 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
-  const { tags } = useNotes();
+  const { tags } = useNotesData();
   const { t } = useLanguage();
   const { search } = useLocation();
 

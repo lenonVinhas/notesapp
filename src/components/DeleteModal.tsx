@@ -1,13 +1,20 @@
 import React from 'react';
 import { Trash2, X } from 'lucide-react';
-import { useNotes } from '../context/NotesContext';
+import { useNotesData } from '../context/NotesDataContext';
+import { useNotesUI } from '../context/NotesUIContext';
 import { useLanguage } from '../context/LanguageContext';
 
 export const DeleteModal: React.FC = () => {
-  const { isDeleting, activeNoteId, deleteNote, closeDeleteModal } = useNotes();
+  const { deleteNote } = useNotesData();
+  const { isDeleting, activeNoteId, closeDeleteModal, setActiveNoteId } = useNotesUI();
   const { t } = useLanguage();
 
   if (!isDeleting || !activeNoteId) return null;
+
+  const handleDelete = () => {
+    deleteNote(activeNoteId);
+    setActiveNoteId(null);
+  };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -46,7 +53,7 @@ export const DeleteModal: React.FC = () => {
               {t('cancel')}
             </button>
             <button
-              onClick={() => deleteNote(activeNoteId)}
+              onClick={handleDelete}
               className="flex-1 py-2.5 px-4 bg-red-600 text-white text-sm font-semibold rounded-lg hover:bg-red-700 transition-all shadow-md shadow-red-200 active:scale-95"
             >
               {t('deleteNote')}

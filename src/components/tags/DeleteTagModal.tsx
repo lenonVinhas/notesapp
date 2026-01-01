@@ -1,13 +1,13 @@
 import React from 'react';
 import { Trash2, X } from 'lucide-react';
 import { useMatch, useParams } from 'react-router-dom';
-import { useNotes } from '../../context/NotesContext';
+import { useNotesData } from '../../context/NotesDataContext';
+import { useNotesUI } from '../../context/NotesUIContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { useNotesNavigation } from '../../hooks/useNotesNavigation';
 
 export const DeleteTagModal: React.FC = () => {
-  const { deleteTag, allNotes, tags } = useNotes();
-  const { closeDeleteTagModal } = useNotesNavigation();
+  const { deleteTag, notes: allNotes, tags } = useNotesData();
+  const { closeDeleteTagModal } = useNotesUI();
   const { t } = useLanguage();
   
   // Check if we are in the delete route

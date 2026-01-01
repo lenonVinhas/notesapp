@@ -1,14 +1,14 @@
 import { useState, useRef, useEffect, type MouseEvent } from 'react';
-import { useNotes } from '../../context/NotesContext';
-import { useNotesNavigation } from '../../hooks/useNotesNavigation';
+import { useNotesData } from '../../context/NotesDataContext';
+import { useNotesUI } from '../../context/NotesUIContext';
 
 interface UseTagItemProps {
     tag: { id: string; name: string };
 }
 
 export const useTagItem = ({ tag }: UseTagItemProps) => {
-    const { updateTag } = useNotes();
-    const { openDeleteTagModal } = useNotesNavigation();
+    const { updateTag } = useNotesData();
+    const { openDeleteTagModal } = useNotesUI();
 
     const [isEditing, setIsEditing] = useState(false);
     const [editName, setEditName] = useState(tag.name);

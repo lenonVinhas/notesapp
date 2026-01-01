@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import type { Note, Tag } from '../types/note';
 import { StorageService, STORAGE_KEYS } from '../services/storage';
+import { NotesSchema, TagsSchema } from '../schemas';
 
 export const useNotesManager = () => {
     const [notes, setNotes] = useState<Note[]>(() =>
-        StorageService.get<Note[]>(STORAGE_KEYS.NOTES, [])
+        StorageService.get<Note[]>(STORAGE_KEYS.NOTES, [], NotesSchema)
     );
 
     const [tags, setTags] = useState<Tag[]>(() =>
-        StorageService.get<Tag[]>(STORAGE_KEYS.TAGS, [])
+        StorageService.get<Tag[]>(STORAGE_KEYS.TAGS, [], TagsSchema)
     );
 
     useEffect(() => {

@@ -1,3 +1,5 @@
+import { type ZodSchema } from 'zod';
+
 export const STORAGE_KEYS = {
     NOTES: 'notes-app-data',
     TAGS: 'notes-app-tags',
@@ -5,10 +7,23 @@ export const STORAGE_KEYS = {
 } as const;
 
 export class StorageService {
-    static get<T>(key: string, defaultValue: T): T {
+    static get<T>(key: string, defaultValue: T, schema?: ZodSchema<T>): T {
         try {
             const saved = localStorage.getItem(key);
-            return saved ? JSON.parse(saved) : defaultValue;
+            if (!saved) return defaultValue;
+
+            const parsed = JSON.parse(saved);
+
+            if (schema) {
+                const result = schema.safeParse(parsed);
+                if (!result.success) {
+                    console.error(`Validation error for key "${key}":`, result.error);
+                    return defaultValue;
+                }
+                return result.data;
+            }
+
+            return parsed;
         } catch (error) {
             console.error(`Error reading from localStorage key "${key}":`, error);
             return defaultValue;
