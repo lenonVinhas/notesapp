@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { NotesProvider, useNotes } from './NotesContext';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { StorageService } from '../services/storage';
 
 vi.mock('../services/storage', () => ({
@@ -31,11 +31,21 @@ const TestComponent = () => {
 };
 
 const renderWithContext = (initialEntries = ['/']) => {
+  const Wrapper = () => (
+    <NotesProvider>
+      <TestComponent />
+    </NotesProvider>
+  );
+
   return render(
     <MemoryRouter initialEntries={initialEntries}>
-      <NotesProvider>
-        <TestComponent />
-      </NotesProvider>
+      <Routes>
+        <Route path="/" element={<Wrapper />} />
+        <Route path="/tags/:tagId" element={<Wrapper />} />
+        <Route path="/archived" element={<Wrapper />} />
+        {/* Add more routes if needed for other tests */}
+        <Route path="*" element={<Wrapper />} /> 
+      </Routes>
     </MemoryRouter>
   );
 };

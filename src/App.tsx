@@ -1,54 +1,43 @@
-import { Sidebar } from './components/Sidebar';
-import { Header } from './components/Header';
-import { NoteList } from './components/NoteList';
-import { NoteEditor } from './components/NoteEditor';
-import { DeleteModal } from './components/DeleteModal';
-import { NotesProvider, useNotes } from './context/NotesContext';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
-import { BrowserRouter } from 'react-router-dom';
-import { useState } from 'react';
-import { cn } from './utils/cn';
+import { RootLayout } from './layouts/RootLayout';
+import { MainLayout } from './layouts/MainLayout';
+import { NoteEditor } from './components/NoteEditor';
+import { NoNoteSelected } from './components/notes/NoNoteSelected';
 
-function AppContent() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { activeNoteId } = useNotes();
-
-  return (
-    <div className="flex h-screen bg-zinc-50 overflow-hidden font-sans relative">
-      <Sidebar isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
-      
-      <div className="flex-1 flex flex-col min-w-0">
-        <Header onMenuClick={() => setIsMobileMenuOpen(true)} />
-        
-        <main className="flex-1 flex overflow-hidden relative">
-          <div className={cn(
-            "h-full overflow-hidden shrink-0",
-            activeNoteId ? "hidden md:block" : "block w-full md:w-auto"
-          )}>
-            <NoteList />
-          </div>
-          <div className={cn(
-            "flex-1 min-w-0 h-full overflow-hidden flex flex-col",
-            activeNoteId ? "flex" : "hidden md:flex"
-          )}>
-            <NoteEditor />
-          </div>
-        </main>
-      </div>
-      <DeleteModal />
-    </div>
-  );
-}
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <RootLayout />,
+    children: [
+      {
+        path: "/",
+        element: <MainLayout />,
+        children: [
+          { index: true, element: <NoNoteSelected /> },
+          { path: ":noteId", element: <NoteEditor /> },
+          
+          { path: "archived", element: <NoNoteSelected /> },
+          { path: "archived/:noteId", element: <NoteEditor /> },
+          
+          { path: "tags/:tagId", element: <NoNoteSelected /> },
+          { path: "tags/:tagId/:noteId", element: <NoteEditor /> },
+          
+          // Delete routes (modal is global, so we just render the background view)
+          { path: ":noteId/delete", element: <NoteEditor /> },
+          { path: "archived/:noteId/delete", element: <NoteEditor /> },
+          { path: "tags/:tagId/:noteId/delete", element: <NoteEditor /> },
+        ]
+      }
+    ]
+  }
+]);
 
 function App() {
   return (
-    <BrowserRouter>
-      <LanguageProvider>
-        <NotesProvider>
-          <AppContent />
-        </NotesProvider>
-      </LanguageProvider>
-    </BrowserRouter>
+    <LanguageProvider>
+      <RouterProvider router={router} />
+    </LanguageProvider>
   )
 }
 

@@ -1,41 +1,29 @@
-import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
+import { useSearchParams, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 export const useNotesNavigation = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const location = useLocation();
     const navigate = useNavigate();
+    const params = useParams(); // { noteId, tagId }
 
     const searchQuery = searchParams.get('q') || '';
 
-    const segments = location.pathname.split('/').filter(Boolean);
-    let view: 'all' | 'archived' = 'all';
-    let selectedTagId: string | null = null;
-    let activeNoteId: string | null = null;
-    let isDeleting = false;
+    // Derived state from Router
+    const activeNoteId = params.noteId || null;
+    const selectedTagId = params.tagId || null;
+    const isDeleting = location.pathname.endsWith('/delete');
 
-    if (segments[segments.length - 1] === 'delete') {
-        isDeleting = true;
-        segments.pop();
-    }
-
-    if (segments[0] === 'archived') {
-        view = 'archived';
-        activeNoteId = segments[1] || null;
-    } else if (segments[0] === 'tags') {
-        selectedTagId = segments[1] || null;
-        activeNoteId = segments[2] || null;
-    } else {
-        view = 'all';
-        activeNoteId = segments[0] || null;
-    }
+    const view: 'all' | 'archived' = location.pathname.startsWith('/archived') ? 'archived' : 'all';
 
     const getPathForNote = (id: string | null, action?: 'delete') => {
         let newPath = '/';
+
         if (view === 'archived') {
             newPath = id ? `/archived/${id}` : '/archived';
         } else if (selectedTagId) {
             newPath = id ? `/tags/${selectedTagId}/${id}` : `/tags/${selectedTagId}`;
         } else {
+            // All notes view
             newPath = id ? `/${id}` : '/';
         }
 
@@ -43,7 +31,8 @@ export const useNotesNavigation = () => {
             newPath += '/delete';
         }
 
-        return `${newPath}${location.search}`;
+        const paramsString = searchParams.toString();
+        return paramsString ? `${newPath}?${paramsString}` : newPath;
     };
 
     const setActiveNoteId = (id: string | null) => {
@@ -59,28 +48,37 @@ export const useNotesNavigation = () => {
     };
 
     const setSearchQuery = (query: string) => {
-        const newParams = new URLSearchParams(searchParams);
-        if (query) {
-            newParams.set('q', query);
-        } else {
-            newParams.delete('q');
-        }
-        setSearchParams(newParams);
+        // We use the functional update to ensure we don't have stale searchParams if multiple updates happen
+        setSearchParams(prev => {
+            const newParams = new URLSearchParams(prev);
+            if (query) {
+                newParams.set('q', query);
+            } else {
+                newParams.delete('q');
+            }
+            return newParams;
+        }, { replace: true });
     };
 
     const setSelectedTagId = (id: string | null) => {
+        const paramsString = searchParams.toString();
+        const search = paramsString ? `?${paramsString}` : '';
+
         if (id) {
-            navigate(`/tags/${id}${location.search}`);
+            navigate(`/tags/${id}${search}`);
         } else {
-            navigate(`/${location.search}`);
+            navigate(`/${search}`);
         }
     };
 
     const setView = (v: 'all' | 'archived') => {
+        const paramsString = searchParams.toString();
+        const search = paramsString ? `?${paramsString}` : '';
+
         if (v === 'archived') {
-            navigate(`/archived${location.search}`);
+            navigate(`/archived${search}`);
         } else {
-            navigate(`/${location.search}`);
+            navigate(`/${search}`);
         }
     };
 

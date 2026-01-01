@@ -4,11 +4,19 @@ import { useNotesNavigation } from './useNotesNavigation';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 
 const wrapper = ({ children, initialEntries = ['/'] }: { children: React.ReactNode, initialEntries?: string[] }) => (
-    <MemoryRouter initialEntries= { initialEntries } >
-    <Routes>
-    <Route path="*" element = { children } />
+    <MemoryRouter initialEntries={initialEntries}>
+        <Routes>
+            <Route path="/" element={children} />
+            <Route path="/:noteId" element={children} />
+            <Route path="/:noteId/delete" element={children} />
+            
+            <Route path="/archived" element={children} />
+            <Route path="/archived/:noteId" element={children} />
+            
+            <Route path="/tags/:tagId" element={children} />
+            <Route path="/tags/:tagId/:noteId" element={children} />
         </Routes>
-        </MemoryRouter>
+    </MemoryRouter>
 );
 
 describe('useNotesNavigation', () => {
