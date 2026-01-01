@@ -9,10 +9,21 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
-  const { searchQuery, setSearchQuery, view, notes } = useNotes();
+  const { searchQuery, setSearchQuery, view, notes, selectedTagId, tags } = useNotes();
   const { t, language, setLanguage } = useLanguage();
 
   const isSearching = searchQuery.length > 0;
+  const selectedTag = tags.find(t => t.id === selectedTagId);
+
+  const getTitle = () => {
+    if (isSearching) {
+      if (selectedTag) return `${t('searchInTag')} ${selectedTag.name}`;
+      return view === 'all' ? t('searchInAll') : t('searchInArchived');
+    }
+    
+    if (selectedTag) return selectedTag.name;
+    return view === 'all' ? t('allNotes') : t('archivedNotes');
+  };
 
   return (
     <header className="h-20 border-b border-zinc-100 flex items-center justify-between px-6 bg-white/80 backdrop-blur-xl sticky top-0 z-30 shrink-0">
@@ -26,10 +37,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
         <div className="flex flex-col">
           <h2 className="text-base md:text-xl font-bold text-zinc-900 transition-all tracking-tight">
-            {isSearching 
-              ? (view === 'all' ? t('searchInAll') : t('searchInArchived'))
-              : (view === 'all' ? t('allNotes') : t('archivedNotes'))
-            }
+            {getTitle()}
           </h2>
           {isSearching && (
             <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-[0.15em] mt-0.5 animate-in fade-in slide-in-from-left-2">

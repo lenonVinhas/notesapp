@@ -46,6 +46,7 @@ const translations: Translations = {
     notesAffectedMany: 'notes',
     willBeAffectedOne: 'will be affected',
     willBeAffectedMany: 'will be affected',
+    searchInTag: 'Searching in',
   },
   pt: {
     allNotes: 'Todas as notas',
@@ -84,6 +85,7 @@ const translations: Translations = {
     notesAffectedMany: 'notas',
     willBeAffectedOne: 'será afetada',
     willBeAffectedMany: 'serão afetadas',
+    searchInTag: 'Pesquisando em',
   },
 };
 
