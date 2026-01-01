@@ -48,14 +48,14 @@ export const TagItem: React.FC<TagItemProps> = ({ tag, onClose }) => {
     >
       {({ isActive }) => (
         <>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-1 min-w-0 mr-2">
             <div className={cn(
-              "w-1.5 h-1.5 rounded-full transition-colors",
+              "w-1.5 h-1.5 rounded-full transition-colors shrink-0",
               isActive ? "bg-zinc-900" : "bg-zinc-300"
             )} />
             <span className="truncate">{tag.name}</span>
           </div>
-          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
             <button
               onClick={startEditing}
               className="p-1 hover:bg-zinc-200 rounded"
