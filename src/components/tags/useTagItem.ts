@@ -1,14 +1,15 @@
 import { useState, useRef, useEffect, type MouseEvent } from 'react';
 import { useNotes } from '../../context/NotesContext';
-import { useLanguage } from '../../context/LanguageContext';
+import { useNotesNavigation } from '../../hooks/useNotesNavigation';
 
 interface UseTagItemProps {
     tag: { id: string; name: string };
 }
 
 export const useTagItem = ({ tag }: UseTagItemProps) => {
-    const { updateTag, deleteTag } = useNotes();
-    const { t } = useLanguage();
+    const { updateTag } = useNotes();
+    const { openDeleteTagModal } = useNotesNavigation();
+
     const [isEditing, setIsEditing] = useState(false);
     const [editName, setEditName] = useState(tag.name);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -41,9 +42,7 @@ export const useTagItem = ({ tag }: UseTagItemProps) => {
     const handleDelete = (e: MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        if (confirm(t('deleteTagConfirm'))) {
-            deleteTag(tag.id);
-        }
+        openDeleteTagModal(tag.id);
     };
 
     return {

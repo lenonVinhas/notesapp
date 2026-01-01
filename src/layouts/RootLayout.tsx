@@ -4,6 +4,7 @@ import { Sidebar } from '../components/Sidebar';
 import { Header } from '../components/Header';
 import { DeleteModal } from '../components/DeleteModal';
 import { NotesProvider } from '../context/NotesContext';
+import { DeleteTagModal } from '../components/tags/DeleteTagModal';
 
 export const RootLayout: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -21,6 +22,7 @@ export const RootLayout: React.FC = () => {
           </main>
         </div>
         <DeleteModal />
+        <DeleteTagModal />
       </div>
     </NotesProvider>
   );

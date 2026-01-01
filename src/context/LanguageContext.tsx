@@ -42,6 +42,10 @@ const translations: Translations = {
     deleteTag: 'Delete tag',
     addTagPlaceholder: '+ tag',
     pressEnterToCreate: 'Press Enter to create',
+    notesAffectedOne: 'note',
+    notesAffectedMany: 'notes',
+    willBeAffectedOne: 'will be affected',
+    willBeAffectedMany: 'will be affected',
   },
   pt: {
     allNotes: 'Todas as notas',
@@ -55,7 +59,6 @@ const translations: Translations = {
     saveNote: 'Salvar nota',
     cancel: 'Cancelar',
     searchPlaceholder: 'Pesquisar...',
-    lookingFor: 'Procurando por',
     minutesAgo: 'minutos atrás',
     today: 'Hoje',
     yesterday: 'Ontem',
@@ -77,6 +80,10 @@ const translations: Translations = {
     deleteTag: 'Excluir tag',
     addTagPlaceholder: '+ tag',
     pressEnterToCreate: 'Pressione Enter para criar',
+    notesAffectedOne: 'nota',
+    notesAffectedMany: 'notas',
+    willBeAffectedOne: 'será afetada',
+    willBeAffectedMany: 'serão afetadas',
   },
 };
 

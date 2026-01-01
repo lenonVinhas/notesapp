@@ -82,6 +82,24 @@ export const useNotesNavigation = () => {
         }
     };
 
+    const openDeleteTagModal = (id: string) => {
+        const paramsString = searchParams.toString();
+        const search = paramsString ? `?${paramsString}` : '';
+        navigate(`/tags/${id}/delete${search}`);
+    };
+
+    const closeDeleteTagModal = () => {
+        const paramsString = searchParams.toString();
+        const search = paramsString ? `?${paramsString}` : '';
+        // If we are deep inside tag delete, we likely want to go back to the tag view
+        // The tagId is in the URL, so we extract it from params if available, or just go root
+        if (params.tagId) {
+            navigate(`/tags/${params.tagId}${search}`);
+        } else {
+            navigate(`/${search}`);
+        }
+    };
+
     return {
         view,
         selectedTagId,
@@ -91,6 +109,8 @@ export const useNotesNavigation = () => {
         setActiveNoteId,
         openDeleteModal,
         closeDeleteModal,
+        openDeleteTagModal,
+        closeDeleteTagModal,
         setSearchQuery,
         setSelectedTagId,
         setView,
