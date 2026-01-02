@@ -13,6 +13,7 @@ interface NotesDataContextType {
   addTag: (name: string) => Tag;
   updateTag: (id: string, name: string) => void;
   deleteTag: (id: string) => void;
+  getTagName: (id: string) => string;
 }
 
 const NotesDataContext = createContext<NotesDataContextType | undefined>(undefined);

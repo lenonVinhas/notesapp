@@ -54,7 +54,7 @@ describe('Notes Management', () => {
         // Click delete button (trash icon)
         // We need to identify the delete button in NoteEditor
         // We can rely on title attribute which is usually translated
-        cy.get('button[title*="Delete"], button[title*="Excluir"]').click();
+        cy.get('button[aria-label="Delete note"], button[aria-label="Excluir nota"]').click();
 
         // Confirm deletion in modal
         cy.contains(/Delete note|Excluir nota/i).should('be.visible'); // Modal title or text

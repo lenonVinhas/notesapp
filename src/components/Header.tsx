@@ -35,6 +35,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
         <button 
           onClick={onMenuClick}
           className="p-2.5 -ml-2.5 text-zinc-600 hover:bg-zinc-50 rounded-xl lg:hidden transition-colors"
+          aria-label={t('openMenu')}
         >
           <Menu className="w-5 h-5" />
         </button>
@@ -76,8 +77,8 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
         <button
           onClick={() => setLanguage(language === 'en' ? 'pt' : 'en')}
-          className="p-2.5 hover:bg-zinc-50 rounded-xl transition-all flex items-center gap-2.5 text-sm font-bold text-zinc-600 border border-zinc-100 hover:border-zinc-200 hover:shadow-sm active:scale-95"
-          title="Switch Language"
+          className="p-2.5 hover:bg-zinc-50 rounded-xl transition-all flex items-center gap-2.5 text-sm font-bold text-zinc-600 border border-zinc-100 hover:border-zinc-200 hover:shadow-sm active:scale-95 focus:ring-2 focus:ring-zinc-900 outline-none"
+          aria-label={t('switchLanguage')}
         >
           <Globe className="w-4 h-4" />
           <span className="hidden sm:inline uppercase tracking-widest">{language}</span>

@@ -36,4 +36,7 @@ export const en = {
     willBeAffectedOne: 'will be affected',
     willBeAffectedMany: 'will be affected',
     searchInTag: 'Searching in',
+    openMenu: 'Open main menu',
+    closeMenu: 'Close main menu',
+    switchLanguage: 'Switch language',
 };

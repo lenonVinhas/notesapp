@@ -78,7 +78,7 @@ describe('Tags Management', () => {
 
         // Find tag in sidebar and rename
         // Force click the edit button (which might be hidden until hover)
-        cy.get('button[title="Edit tag"], button[title="Editar tag"]').last().click({ force: true });
+        cy.get('button[aria-label="Edit tag"], button[aria-label="Editar tag"]').last().click({ force: true });
 
         // Input should appear
         cy.get('input[value="OldName"]').clear().type('NewName{enter}');

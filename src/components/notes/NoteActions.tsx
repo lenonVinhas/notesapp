@@ -22,7 +22,7 @@ export const NoteActions: React.FC<NoteActionsProps> = ({ isArchived, onArchive,
             ? "text-blue-600 hover:bg-blue-50" 
             : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
         )}
-        title={isArchived ? t('unarchiveNote') : t('archiveNote')}
+        aria-label={isArchived ? t('unarchiveNote') : t('archiveNote')}
       >
         {isArchived ? <RotateCcw className="w-5 h-5" /> : <Archive className="w-5 h-5" />}
         <span className="absolute right-full mr-3 px-2 py-1 bg-zinc-900 text-white text-[10px] rounded opacity-0 group-hover/btn:opacity-100 whitespace-nowrap pointer-events-none transition-opacity">
@@ -33,7 +33,7 @@ export const NoteActions: React.FC<NoteActionsProps> = ({ isArchived, onArchive,
       <button
         onClick={onDelete}
         className="p-3 text-zinc-400 hover:bg-red-50 hover:text-red-600 rounded-lg transition-all relative group/btn"
-        title={t('deleteNote')}
+        aria-label={t('deleteNote')}
       >
         <Trash2 className="w-5 h-5" />
         <span className="absolute right-full mr-3 px-2 py-1 bg-red-600 text-white text-[10px] rounded opacity-0 group-hover/btn:opacity-100 whitespace-nowrap pointer-events-none transition-opacity">

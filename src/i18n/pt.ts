@@ -18,7 +18,7 @@ export const pt = {
     titlePlaceholder: 'Título da nota',
     contentPlaceholder: 'Comece a escrever...',
     searchInAll: 'Pesquisando em Todas as notas',
-    searchInArchived: 'Pesquisando em Arquivadas',
+    searchInArchived: 'Pesquisar em notas arquivadas',
     searchResults: 'resultados',
     clearSearch: 'Limpar',
     noResultsFound: 'Nenhum resultado encontrado para',
@@ -36,4 +36,7 @@ export const pt = {
     willBeAffectedOne: 'será afetada',
     willBeAffectedMany: 'serão afetadas',
     searchInTag: 'Pesquisando em',
+    openMenu: 'Abrir menu principal',
+    closeMenu: 'Fechar menu principal',
+    switchLanguage: 'Mudar idioma',
 };

@@ -59,14 +59,14 @@ export const TagItem: React.FC<TagItemProps> = ({ tag, onClose }) => {
             <button
               onClick={startEditing}
               className="p-1 hover:bg-zinc-200 rounded"
-              title={t('editTag')}
+              aria-label={t('editTag')}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
             </button>
             <button
               onClick={handleDelete}
               className="p-1 hover:bg-red-100 text-zinc-400 hover:text-red-500 rounded"
-              title={t('deleteTag')}
+              aria-label={t('deleteTag')}
             >
                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
             </button>

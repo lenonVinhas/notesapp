@@ -8,14 +8,10 @@ import { NoteCard } from './notes/NoteCard';
 import { NoteListEmptyState } from './notes/NoteListEmptyState';
 
 export const NoteList: React.FC = () => {
-  const { tags, createNote } = useNotesData();
+  const { createNote, getTagName } = useNotesData();
   const { activeNoteId, setActiveNoteId, searchQuery } = useNotesUI();
   const { filteredNotes } = useFilteredNotes();
   const { t } = useLanguage();
-
-  const getTagName = (tagId: string) => {
-    return tags.find(t => t.id === tagId)?.name || '';
-  };
 
   const handleCreateNote = () => {
     const newNote = createNote();
@@ -44,7 +40,6 @@ export const NoteList: React.FC = () => {
               note={note}
               isActive={activeNoteId === note.id}
               onClick={() => setActiveNoteId(note.id)}
-              getTagName={getTagName}
             />
           ))
         )}

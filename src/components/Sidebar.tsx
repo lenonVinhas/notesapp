@@ -25,17 +25,24 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         />
       )}
 
-      <aside className={cn(
-        "fixed lg:static inset-y-0 left-0 w-64 border-r border-zinc-200 h-screen flex flex-col bg-white z-50 transition-transform duration-300 lg:translate-x-0 shrink-0",
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
+      <aside 
+        aria-label="Main Navigation"
+        className={cn(
+          "fixed lg:static inset-y-0 left-0 w-64 border-r border-zinc-200 h-screen flex flex-col bg-white z-50 transition-transform duration-300 lg:translate-x-0 shrink-0",
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
         <div className="p-6">
           <div className="flex items-center justify-between mb-8">
             <NavLink to={`/${search}`} className="flex items-center gap-2 no-underline text-inherit" onClick={onClose}>
               <Files className="w-6 h-6" />
               <h1 className="text-xl font-bold">NotesApp</h1>
             </NavLink>
-            <button onClick={onClose} className="p-2 -mr-2 text-zinc-400 hover:text-zinc-600 lg:hidden">
+            <button 
+              onClick={onClose} 
+              className="p-2 -mr-2 text-zinc-400 hover:text-zinc-600 lg:hidden focus:ring-2 focus:ring-zinc-900 rounded-lg outline-none"
+              aria-label={t('closeMenu')}
+            >
               <X className="w-5 h-6" />
             </button>
           </div>

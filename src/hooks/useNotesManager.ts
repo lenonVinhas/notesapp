@@ -33,6 +33,10 @@ export const useNotesManager = () => {
         return newNote;
     };
 
+    const getTagName = (tagId: string) => {
+        return tags.find((t) => t.id === tagId)?.name || '';
+    };
+
     const updateNote = (id: string, updates: Partial<Note>) => {
         setNotes((prev) =>
             prev.map((n) =>
@@ -93,5 +97,6 @@ export const useNotesManager = () => {
         addTag,
         updateTag,
         deleteTag,
+        getTagName,
     };
 };
