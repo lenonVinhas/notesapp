@@ -58,15 +58,21 @@ Built for every device. Experience a fluid, adaptive UI that transitions seamles
 - Context-aware search: search within the main list, archives, or specific tag views.
 - Real-time result counting and visual feedback.
 
-### 🌍 Seamless i18n
-- Full support for **English** and **Portuguese**.
-- One-click language switching with instant UI updates across the entire app.
-- Localized dates, placeholders, and system messages.
+### 💾 Flexible Storage (Browser & Local)
+Take control of your data. Choose where your notes live with a robust storage system powered by the **File System Access API**.
+- **Browser Storage**: Fast and internal, perfect for quick notes without local setup.
+- **Local Folder**: Sync your notes directly to a folder on your computer. Your data exists in `.json` files that you can version-control or back up yourself.
+- **Auto-Recovery**: Intelligent permission management that restores access to your local folder on page reload.
 
-### 📱 Responsive & Motion-Rich UI
-- **Micro-interactions**: Subtle scale-down effects on buttons and smooth hover transitions.
-- **Glassmorphism**: Elegant headers and sidebar backgrounds using Lucide icons.
-- **Mobile-First**: Fully responsive layout that adapts gracefully from mobile to ultra-wide screens.
+---
+
+## 🏗️ Architecture & Patterns
+
+The NotesApp has been refactored to follow high-level engineering standards:
+- **Repository Pattern**: Abstracted storage layer that decouples business logic from persistence methods.
+- **Context Split Strategy**: State and Actions are separated in the React Context tree to minimize re-renders and maximize UI performance.
+- **Atomic Decomp**: Large UI components like `Sidebar` and `NoteEditor` are decomposed into smaller, focused functional blocks.
+- **Global Error Handling**: Integrated `ErrorBoundary` and a centralized notification system for a resilient user experience.
 
 ---
 
