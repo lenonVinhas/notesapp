@@ -1,6 +1,7 @@
 import React from 'react';
 import { X } from 'lucide-react';
-
+import { Badge } from '../ui/Badge';
+import { Button } from '../ui/Button';
 
 interface TagListProps {
     tags: { id: string; name: string }[];
@@ -11,15 +12,20 @@ interface TagListProps {
 
 export const TagList: React.FC<TagListProps> = ({ selectedTags, onRemoveTag, getTagName }) => {
     return (
-        <>
+        <div className="flex flex-wrap gap-2">
             {selectedTags.map(tagId => (
-                <span key={tagId} className="flex items-center gap-1.5 bg-zinc-100 text-zinc-700 px-2 py-1 rounded text-sm group/tag max-w-[200px]">
-                    <span className="truncate">{getTagName(tagId)}</span>
-                    <button onClick={() => onRemoveTag(tagId)} className="hover:text-red-500 opacity-0 group-hover/tag:opacity-100 transition-opacity">
+                <Badge key={tagId} variant="secondary" className="flex items-center gap-1.5 pr-1 py-1 group/tag">
+                    <span className="truncate max-w-[150px]">{getTagName(tagId)}</span>
+                    <Button 
+                        size="icon" 
+                        variant="ghost" 
+                        onClick={() => onRemoveTag(tagId)} 
+                        className="h-4 w-4 rounded-full opacity-0 group-hover/tag:opacity-100 transition-opacity hover:text-red-500"
+                    >
                         <X className="w-3 h-3" />
-                    </button>
-                </span>
+                    </Button>
+                </Badge>
             ))}
-        </>
+        </div>
     );
 };

@@ -1,9 +1,12 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
+import { SettingsProvider } from './context/SettingsContext';
 import { RootLayout } from './layouts/RootLayout';
 import { MainLayout } from './layouts/MainLayout';
 import { NoteEditor } from './components/NoteEditor';
 import { NoNoteSelected } from './components/notes/NoNoteSelected';
+import { NotificationProvider } from './context/NotificationContext';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 const router = createBrowserRouter([
   {
@@ -21,6 +24,7 @@ const router = createBrowserRouter([
           { path: "archived/:noteId", element: <NoteEditor /> },
           
           { path: "tags/:tagId", element: <NoNoteSelected /> },
+          { path: "tags/:tagId/delete", element: <NoNoteSelected /> },
           { path: "tags/:tagId/:noteId", element: <NoteEditor /> },
           
           { path: ":noteId/delete", element: <NoteEditor /> },
@@ -34,9 +38,15 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <LanguageProvider>
-      <RouterProvider router={router} />
-    </LanguageProvider>
+    <ErrorBoundary>
+      <LanguageProvider>
+        <NotificationProvider>
+          <SettingsProvider>
+            <RouterProvider router={router} />
+          </SettingsProvider>
+        </NotificationProvider>
+      </LanguageProvider>
+    </ErrorBoundary>
   )
 }
 

@@ -1,10 +1,15 @@
 import React from 'react';
-import { Home, Archive, Tag, Files, X } from 'lucide-react';
+import { Home, Archive, Files, X, Settings as SettingsIcon } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useNotesData } from '../context/NotesDataContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useSettings } from '../context/SettingsContext';
 import { cn } from '../utils/cn';
-import { TagItem } from './tags/TagItem';
+import { Button } from './ui/Button';
+import { SettingsModal } from './settings/SettingsModal';
+import { SidebarNavItem } from './sidebar/SidebarNavItem';
+import { SidebarTagList } from './sidebar/SidebarTagList';
+import { SidebarStorageBanner } from './sidebar/SidebarStorageBanner';
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -14,7 +19,9 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { tags } = useNotesData();
   const { t } = useLanguage();
+  const { storageMode, needsPermission, requestPermission } = useSettings();
   const { search } = useLocation();
+  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
 
   return (
     <>
@@ -32,69 +39,64 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="p-6">
+        <div className="p-6 flex-1 flex flex-col">
           <div className="flex items-center justify-between mb-8">
             <NavLink to={`/${search}`} className="flex items-center gap-2 no-underline text-inherit" onClick={onClose}>
               <Files className="w-6 h-6" />
               <h1 className="text-xl font-bold">NotesApp</h1>
             </NavLink>
-            <button 
+            <Button 
+              variant="ghost"
+              size="icon"
               onClick={onClose} 
-              className="p-2 -mr-2 text-zinc-400 hover:text-zinc-600 lg:hidden focus:ring-2 focus:ring-zinc-900 rounded-lg outline-none"
+              className="-mr-2 text-zinc-400 lg:hidden"
               aria-label={t('closeMenu')}
             >
               <X className="w-5 h-6" />
-            </button>
+            </Button>
           </div>
 
-          <nav className="space-y-1.5">
-            <NavLink
-              to={`/${search}`}
+          <nav className="space-y-1.5 focus:outline-none">
+            <SidebarNavItem
+              to="/"
               end
+              icon={Home}
+              label={t('allNotes')}
               onClick={onClose}
-              className={({ isActive }) => cn(
-                "w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200",
-                isActive ? "bg-zinc-900 text-white shadow-lg shadow-zinc-100" : "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900"
-              )}
-            >
-              {({ isActive }) => (
-                <div className="flex items-center gap-3">
-                  <Home className={cn("w-4 h-4", isActive ? "text-white" : "text-zinc-400")} />
-                  {t('allNotes')}
-                </div>
-              )}
-            </NavLink>
+            />
             
-            <NavLink
-              to={`/archived${search}`}
+            <SidebarNavItem
+              to="/archived"
+              icon={Archive}
+              label={t('archivedNotes')}
               onClick={onClose}
-              className={({ isActive }) => cn(
-                "w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200",
-                isActive ? "bg-zinc-900 text-white shadow-lg shadow-zinc-100" : "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900"
-              )}
-            >
-              {({ isActive }) => (
-                <>
-                  <Archive className={cn("w-4 h-4", isActive ? "text-white" : "text-zinc-400")} />
-                  {t('archivedNotes')}
-                </>
-              )}
-            </NavLink>
+            />
           </nav>
 
-          <div className="mt-10">
-            <div className="flex items-center gap-2 px-4 mb-4">
-               <Tag className="w-3.5 h-3.5 text-zinc-400" />
-               <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-[0.1em]">{t('tags')}</span>
-            </div>
-            <div className="space-y-1">
-              {tags.map((tag) => (
-                <TagItem key={tag.id} tag={tag} onClose={onClose} />
-              ))}
-            </div>
+          <SidebarTagList tags={tags} onClose={onClose} />
+
+          <div className="mt-auto pt-6 border-t border-zinc-100 space-y-4">
+            {storageMode === 'files' && needsPermission && (
+              <SidebarStorageBanner requestPermission={requestPermission} />
+            )}
+
+            <Button
+              variant="ghost"
+              onClick={() => setIsSettingsOpen(true)}
+              aria-label={t('settings')}
+              className="w-full justify-start gap-3 px-4 py-2.5 text-sm font-semibold text-zinc-500"
+            >
+              <SettingsIcon className="w-4 h-4 text-zinc-400" />
+              {t('settings')}
+            </Button>
           </div>
         </div>
       </aside>
+
+      <SettingsModal 
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+      />
     </>
   );
 };

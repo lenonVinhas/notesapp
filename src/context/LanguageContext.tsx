@@ -12,12 +12,18 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>(() => 
-    StorageService.get<Language>(STORAGE_KEYS.LANGUAGE, 'en', LanguageSchema)
-  );
+  const [language, setLanguage] = useState<Language>('en');
 
   useEffect(() => {
-    StorageService.set(STORAGE_KEYS.LANGUAGE, language);
+    const loadLanguage = async () => {
+      const saved = await StorageService.getGlobal<Language>(STORAGE_KEYS.LANGUAGE, 'en', LanguageSchema);
+      setLanguage(saved);
+    };
+    loadLanguage();
+  }, []);
+
+  useEffect(() => {
+    StorageService.setGlobal(STORAGE_KEYS.LANGUAGE, language);
   }, [language]);
 
   const t = (key: TranslationKey) => {

@@ -2,8 +2,27 @@ import React from 'react';
 import { X } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { createPortal } from 'react-dom';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-interface ModalProps {
+const modalVariants = cva(
+  "relative bg-white border border-zinc-200 shadow-2xl rounded-2xl overflow-hidden animate-in zoom-in fade-in duration-300",
+  {
+    variants: {
+      size: {
+        sm: "max-w-sm w-full",
+        md: "max-w-md w-full",
+        lg: "max-w-lg w-full",
+        xl: "max-w-xl w-full",
+        "2xl": "max-w-2xl w-full",
+      },
+    },
+    defaultVariants: {
+      size: "sm",
+    },
+  }
+);
+
+interface ModalProps extends VariantProps<typeof modalVariants> {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
@@ -11,6 +30,7 @@ interface ModalProps {
   children?: React.ReactNode;
   footer?: React.ReactNode;
   className?: string;
+  closeLabel?: string;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -21,6 +41,8 @@ export const Modal: React.FC<ModalProps> = ({
   children,
   footer,
   className,
+  size,
+  closeLabel,
 }) => {
   if (!isOpen) return null;
 
@@ -33,33 +55,44 @@ export const Modal: React.FC<ModalProps> = ({
       />
 
       {/* Modal Content */}
-      <div
-        className={cn(
-          "relative bg-white border border-zinc-200 shadow-2xl rounded-2xl p-8 max-w-sm w-full animate-in zoom-in fade-in duration-300",
-          className
-        )}
+      <div 
+        className={cn(modalVariants({ size }), className)}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
       >
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-2 hover:bg-zinc-100 rounded-full transition-colors"
-        >
-          <X className="w-4 h-4 text-zinc-400" />
-        </button>
-
-        <div className="flex flex-col items-center text-center">
-          {title && (
-            <h2 className="text-xl font-bold text-zinc-900 mb-2">{title}</h2>
-          )}
-          {description && (
-            <p className="text-sm text-zinc-500 mb-8 leading-relaxed">
-              {description}
-            </p>
-          )}
-
-          {children}
-
-          {footer && <div className="flex gap-3 w-full mt-6">{footer}</div>}
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100">
+          <div>
+            {title && (
+              <h2 id="modal-title" className="text-lg font-bold text-zinc-900">{title}</h2>
+            )}
+            {description && (
+              <p className="text-xs text-zinc-500 mt-0.5">
+                {description}
+              </p>
+            )}
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 text-zinc-400 hover:text-zinc-600 rounded-lg hover:bg-zinc-50 transition-colors"
+            aria-label={closeLabel}
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
+
+        {/* Body */}
+        <div className="p-6">
+          {children}
+        </div>
+
+        {/* Footer */}
+        {footer && (
+          <div className="px-6 py-4 bg-zinc-50 border-t border-zinc-100 flex justify-end gap-3">
+            {footer}
+          </div>
+        )}
       </div>
     </div>,
     document.body
