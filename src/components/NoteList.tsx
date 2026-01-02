@@ -8,7 +8,7 @@ import { NoteCard } from './notes/NoteCard';
 import { NoteListEmptyState } from './notes/NoteListEmptyState';
 
 export const NoteList: React.FC = () => {
-  const { createNote, getTagName } = useNotesData();
+  const { createNote } = useNotesData();
   const { activeNoteId, setActiveNoteId, searchQuery } = useNotesUI();
   const { filteredNotes } = useFilteredNotes();
   const { t } = useLanguage();
