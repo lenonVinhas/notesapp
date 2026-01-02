@@ -1,5 +1,5 @@
 {
-  "name": "notes-app",
+  "name": "notesapp",
   "compatibility_date": "2026-01-02",
   "assets": {
     "directory": "./dist"
