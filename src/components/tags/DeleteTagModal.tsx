@@ -59,12 +59,19 @@ export const DeleteTagModal: React.FC = () => {
     >
       <div className="flex flex-col items-center">
         <div className="bg-red-50 p-3 rounded-xl mb-6 border border-red-100">
-          <Trash2 className="w-8 h-8 text-red-500" />
+          <Trash2 className="w-8 h-8 text-red-600" />
         </div>
         
+        <p className="text-zinc-500 text-sm text-center mb-6">
+          {t('deleteTagConfirm')}
+        </p>
+
         {affectedNotesCount > 0 && (
-           <div className="mb-4 px-3 py-2 bg-zinc-50 rounded-lg border border-zinc-200 text-xs text-zinc-600">
-             ⚠️ <strong>{affectedNotesCount}</strong> {affectedNotesCount === 1 ? t('notesAffectedOne') : t('notesAffectedMany')} {affectedNotesCount === 1 ? t('willBeAffectedOne') : t('willBeAffectedMany')}.
+           <div className="mb-4 w-full px-3 py-2 bg-zinc-50 rounded-lg border border-zinc-200 text-xs text-zinc-600 flex items-center gap-2">
+             <span>⚠️</span>
+             <span>
+               <strong>{affectedNotesCount}</strong> {affectedNotesCount === 1 ? t('notesAffectedOne') : t('notesAffectedMany')} {affectedNotesCount === 1 ? t('willBeAffectedOne') : t('willBeAffectedMany')}.
+             </span>
            </div>
         )}
       </div>

@@ -7,11 +7,13 @@ import { Modal } from './ui/Modal';
 import { Button } from './ui/Button';
 
 export const DeleteModal: React.FC = () => {
-  const { deleteNote } = useNotesData();
+  const { deleteNote, notes: allNotes } = useNotesData();
   const { isDeleting, activeNoteId, closeDeleteModal, setActiveNoteId } = useNotesUI();
   const { t } = useLanguage();
 
   if (!isDeleting || !activeNoteId) return null;
+
+  const note = allNotes.find(n => n.id === activeNoteId);
 
   const handleDelete = () => {
     deleteNote(activeNoteId);
@@ -23,7 +25,7 @@ export const DeleteModal: React.FC = () => {
     <Modal
       isOpen={isDeleting}
       onClose={closeDeleteModal}
-      title={t('deleteNote')}
+      title={`${t('deleteNote')} "${note?.title || t('titlePlaceholder')}"`}
       description={t('confirmDelete')}
       footer={
         <>
@@ -44,8 +46,14 @@ export const DeleteModal: React.FC = () => {
         </>
       }
     >
-      <div className="bg-red-50 p-3 rounded-xl mb-6 border border-red-100">
-        <Trash2 className="w-8 h-8 text-red-500" />
+      <div className="flex flex-col items-center">
+        <div className="bg-red-50 p-3 rounded-xl mb-6 border border-red-100">
+          <Trash2 className="w-8 h-8 text-red-600" />
+        </div>
+        
+        <p className="text-zinc-500 text-sm text-center mb-2">
+          {t('confirmDelete')}
+        </p>
       </div>
     </Modal>
   );

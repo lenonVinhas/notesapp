@@ -24,6 +24,7 @@ const router = createBrowserRouter([
           { path: "archived/:noteId", element: <NoteEditor /> },
           
           { path: "tags/:tagId", element: <NoNoteSelected /> },
+          { path: "tags/:tagId/delete", element: <NoNoteSelected /> },
           { path: "tags/:tagId/:noteId", element: <NoteEditor /> },
           
           { path: ":noteId/delete", element: <NoteEditor /> },

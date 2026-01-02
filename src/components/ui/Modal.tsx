@@ -55,12 +55,17 @@ export const Modal: React.FC<ModalProps> = ({
       />
 
       {/* Modal Content */}
-      <div className={cn(modalVariants({ size }), className)}>
+      <div 
+        className={cn(modalVariants({ size }), className)}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100">
           <div>
             {title && (
-              <h2 className="text-lg font-bold text-zinc-900">{title}</h2>
+              <h2 id="modal-title" className="text-lg font-bold text-zinc-900">{title}</h2>
             )}
             {description && (
               <p className="text-xs text-zinc-500 mt-0.5">
