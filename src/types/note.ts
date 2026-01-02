@@ -7,10 +7,8 @@ export interface Note {
     id: string;
     title: string;
     content: string;
-    tags: string[]; // IDs of tags
-    lastEdited: string; // ISO date
+    tags: string[];
+    lastEdited: string;
     isArchived: boolean;
 }
-
-// Language type explicitly removed, should import from ../i18n if needed
 

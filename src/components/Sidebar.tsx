@@ -18,7 +18,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
   return (
     <>
-      {/* Overlay for mobile/tablet */}
       {isOpen && (
         <div 
           className="fixed inset-0 bg-zinc-900/20 backdrop-blur-sm z-40 lg:hidden"

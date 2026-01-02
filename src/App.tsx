@@ -23,7 +23,6 @@ const router = createBrowserRouter([
           { path: "tags/:tagId", element: <NoNoteSelected /> },
           { path: "tags/:tagId/:noteId", element: <NoteEditor /> },
           
-          // Delete routes (modal is global, so we just render the background view)
           { path: ":noteId/delete", element: <NoteEditor /> },
           { path: "archived/:noteId/delete", element: <NoteEditor /> },
           { path: "tags/:tagId/:noteId/delete", element: <NoteEditor /> },

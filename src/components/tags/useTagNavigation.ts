@@ -35,7 +35,6 @@ export const useTagNavigation = ({
             if (selectedIndex < suggestions.length) {
                 onAddExistingTag(suggestions[selectedIndex].id);
             } else {
-                // Create new tag
                 if (newTagName.trim()) {
                     onAddTag(newTagName.trim());
                 }

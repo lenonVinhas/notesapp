@@ -34,7 +34,7 @@ export const TagSuggestions: React.FC<TagSuggestionsProps> = ({
                         index === selectedIndex && "bg-zinc-100"
                     )}
                     onMouseDown={(e) => {
-                        e.preventDefault(); // Prevent blur
+                e.preventDefault();
                         onSelect(tag.id);
                         setNewTagName('');
                         setSelectedIndex(0);
@@ -47,7 +47,7 @@ export const TagSuggestions: React.FC<TagSuggestionsProps> = ({
             {newTagName && !suggestions.some(t => t.name.toLowerCase() === newTagName.toLowerCase()) && (
                 <div className={cn(
                     "px-3 py-2 text-xs text-zinc-400 border-t border-zinc-50 bg-zinc-50/50",
-                     selectedIndex === suggestions.length && "bg-zinc-100" // Highlight if selected
+                     selectedIndex === suggestions.length && "bg-zinc-100"
                 )}>
                     {t('pressEnterToCreate')} "{newTagName}"
                 </div>

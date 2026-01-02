@@ -72,7 +72,6 @@ export const TagInput: React.FC<TagInputProps> = ({
               }}
               onKeyDown={handleKeyDown}
               onBlur={() => {
-                // Delay hiding suggestions to allow clicking
                 setTimeout(() => setNewTagName(''), 200);
               }}
               className="text-sm outline-none border-b border-zinc-200 focus:border-zinc-900 bg-transparent py-0.5 px-1 w-24 placeholder:text-zinc-300"

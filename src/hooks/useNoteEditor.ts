@@ -8,11 +8,9 @@ export const useNoteEditor = () => {
 
     const note = notes.find((n) => n.id === activeNoteId);
 
-    // Track initial state for "Undo" functionality when clicking Cancel
     const initialStateRef = useRef<{ title: string; content: string; lastEdited: string } | null>(null);
     const lastNoteIdRef = useRef<string | null>(null);
 
-    // Capture initial state when a new note is opened
     useEffect(() => {
         if (activeNoteId && note && activeNoteId !== lastNoteIdRef.current) {
             initialStateRef.current = {
@@ -25,20 +23,7 @@ export const useNoteEditor = () => {
             initialStateRef.current = null;
             lastNoteIdRef.current = null;
         }
-    }, [activeNoteId, note?.id, note?.title, note?.content, note?.lastEdited]); // Added all deps to satisfy exhaustive-deps, though logic intends to capture snapshot.
-    // Actually, capturing snapshot should happen ONCE when noteId changes.
-    // If I add title/content to deps, it will update the snapshot on every edit, defeating the purpose of UNDO.
-    // So logic in NoteEditor was: [activeNoteId, note?.id]
-    // But note object identity might change if immutable update happens.
-    // Let's stick to activeNoteId change detection.
-
-    // Correction:
-    // If note object changes due to editing, we DON'T want to update initialStateRef.
-    // We only want to update it when we switch to a DIFFERENT note.
-
-    // The previous logic was:
-    // if (activeNoteId && note && activeNoteId !== lastNoteIdRef.current)
-    // This Condition ensures it only runs when the ID changes. so dependencies [activeNoteId, note?.id] + the check is fine.
+    }, [activeNoteId, note?.id, note?.title, note?.content, note?.lastEdited]);
 
     const handleSave = () => {
         // Changes are already saved via auto-save, just close the editor

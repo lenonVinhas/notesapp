@@ -13,8 +13,6 @@ export const useDateFormatter = () => {
             return `${diffMins} ${t('minutesAgo')}`;
         }
 
-        // Determining locale from language context ('pt' -> 'pt-BR', 'en' -> 'en-US')
-        // Assuming language context returns 'pt' or 'en', mapping to full locale
         const locale = language === 'pt' ? 'pt-BR' : 'en-US';
 
         return new Intl.DateTimeFormat(locale, {

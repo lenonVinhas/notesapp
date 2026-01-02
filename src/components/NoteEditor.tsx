@@ -39,7 +39,6 @@ export const NoteEditor: React.FC = () => {
 
   return (
     <div className="flex-1 flex bg-white overflow-hidden relative group">
-      {/* Main Editor Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="p-4 md:p-8 pb-4">
           <div className="md:hidden mb-4">
@@ -105,7 +104,6 @@ export const NoteEditor: React.FC = () => {
         </div>
       </div>
 
-      {/* Floating Action Bar - UX Optimized */}
       <NoteActions
         isArchived={note.isArchived}
         onArchive={handleArchive}

@@ -3,17 +3,8 @@ import { useNotesData } from '../context/NotesDataContext';
 import { useNotesUI } from '../context/NotesUIContext';
 
 export const useFilteredNotes = () => {
-    const { notes } = useNotesData(); // notes from manager are all notes (unsorted/unfiltered)
-    // wait, useNotesManager just returned 'notes' which was state.
-    // NotesContext sorted it.
-
-    // Actually useNotesManager returned notes.
-    // NotesContext filtered and sorted them.
-
+    const { notes } = useNotesData();
     const { searchQuery, selectedTagId, view } = useNotesUI();
-
-    // We need to access 'notes' from data context, which are all notes.
-    // Note: createNote etc updates the 'notes' in data context.
 
     const filteredNotes = useMemo(() => {
         return notes

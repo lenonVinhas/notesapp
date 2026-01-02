@@ -92,6 +92,4 @@ describe('useNotesNavigation', () => {
         expect(result.current.searchQuery).toBe('hello');
     });
 
-    // Navigation functions are harder to test with just renderHook because they trigger re-renders that MemoryRouter doesn't always reflect back into the same result object unless we re-render or check location.
-    // But we can check if they don't crash and if we can use a custom hook to expose location.
 });

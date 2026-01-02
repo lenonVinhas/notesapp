@@ -18,13 +18,11 @@ export const DeleteModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-zinc-900/40 backdrop-blur-sm animate-in fade-in duration-300"
         onClick={closeDeleteModal}
       />
       
-      {/* Modal Content - Refined Minimal Style */}
       <div className="relative bg-white border border-zinc-200 shadow-2xl rounded-2xl p-8 max-w-sm w-full animate-in zoom-in fade-in duration-300">
         <button 
           onClick={closeDeleteModal}

@@ -10,7 +10,6 @@ export const DeleteTagModal: React.FC = () => {
   const { closeDeleteTagModal } = useNotesUI();
   const { t } = useLanguage();
   
-  // Check if we are in the delete route
   const match = useMatch('/tags/:tagId/delete');
   const params = useParams();
   
@@ -20,12 +19,10 @@ export const DeleteTagModal: React.FC = () => {
   const tag = tags.find(t => t.id === tagId);
   
   if (!tag) {
-    // If tag doesn't exist (maybe already deleted or invalid URL), just close
     closeDeleteTagModal();
     return null;
   }
 
-  // Count affected notes
   const affectedNotesCount = allNotes.filter(note => note.tags.includes(tagId)).length;
 
   const handleConfirm = () => {
@@ -35,13 +32,11 @@ export const DeleteTagModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-zinc-900/40 backdrop-blur-sm animate-in fade-in duration-300"
         onClick={closeDeleteTagModal}
       />
       
-      {/* Modal Content */}
       <div className="relative bg-white border border-zinc-200 shadow-2xl rounded-2xl p-8 max-w-sm w-full animate-in zoom-in fade-in duration-300">
         <button 
           onClick={closeDeleteTagModal}

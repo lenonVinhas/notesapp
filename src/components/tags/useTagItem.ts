@@ -36,7 +36,7 @@ export const useTagItem = ({ tag }: UseTagItemProps) => {
 
     const exitEditing = () => {
         setIsEditing(false);
-        setEditName(tag.name); // Reset to original name on cancel
+        setEditName(tag.name);
     };
 
     const handleDelete = (e: MouseEvent) => {
