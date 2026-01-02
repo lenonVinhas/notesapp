@@ -12,7 +12,8 @@
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "cy:server": "vite --port 5175",
-    "test:e2e": "start-server-and-test cy:server http://localhost:5175 cy:run"
+    "test:e2e": "start-server-and-test cy:server http://localhost:5175 cy:run",
+    "deploy": "wrangler deploy"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
@@ -47,6 +48,7 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "^7.2.4",
-    "vitest": "^4.0.16"
+    "vitest": "^4.0.16",
+    "wrangler": "^3.101.0"
   }
 }
