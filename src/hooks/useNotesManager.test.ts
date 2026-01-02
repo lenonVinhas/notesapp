@@ -5,8 +5,8 @@ import { StorageService } from '../services/storage';
 
 vi.mock('../services/storage', () => ({
     StorageService: {
-        get: vi.fn(),
-        set: vi.fn(),
+        get: vi.fn().mockResolvedValue([]),
+        set: vi.fn().mockResolvedValue(undefined),
     },
     STORAGE_KEYS: {
         NOTES: 'notes-app-data',
@@ -14,16 +14,31 @@ vi.mock('../services/storage', () => ({
     },
 }));
 
+vi.mock('../context/SettingsContext', () => ({
+    useSettings: vi.fn(() => ({
+        storageMode: 'local',
+        directoryPath: '',
+        isInitializing: false,
+        needsPermission: false,
+    })),
+}));
+
+vi.mock('../context/NotificationContext', () => ({
+    useNotification: vi.fn(() => ({
+        notify: vi.fn(),
+    })),
+}));
+
 describe('useNotesManager', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
 
-    it('should initialize with data from StorageService', () => {
+    it('should initialize with data from StorageService', async () => {
         const mockNotes = [{ id: '1', title: 'Test', content: '', tags: [], lastEdited: '', isArchived: false }];
         const mockTags = [{ id: 't1', name: 'Tag1' }];
 
-        vi.mocked(StorageService.get).mockImplementation((key: string) => {
+        vi.mocked(StorageService.get).mockImplementation(async (key: string) => {
             if (key === 'notes-app-data') return mockNotes;
             if (key === 'notes-app-tags') return mockTags;
             return [];
@@ -31,16 +46,25 @@ describe('useNotesManager', () => {
 
         const { result } = renderHook(() => useNotesManager());
 
+        // Wait for useEffect to load data
+        await act(async () => {
+            await Promise.resolve(); // Allow effects to run
+        });
+
         expect(result.current.notes).toEqual(mockNotes);
         expect(result.current.tags).toEqual(mockTags);
     });
 
-    it('should create a note', () => {
-        vi.mocked(StorageService.get).mockReturnValue([]);
+    it('should create a note', async () => {
+        vi.mocked(StorageService.get).mockResolvedValue([]);
         const { result } = renderHook(() => useNotesManager());
 
+        await act(async () => {
+            await Promise.resolve();
+        });
+
         let newNote;
-        act(() => {
+        await act(async () => {
             newNote = result.current.createNote();
         });
 
@@ -49,12 +73,19 @@ describe('useNotesManager', () => {
         expect(StorageService.set).toHaveBeenCalledWith('notes-app-data', expect.arrayContaining([newNote]));
     });
 
-    it('should update a note', () => {
+    it('should update a note', async () => {
         const initialNote = { id: '1', title: 'Old', content: '', tags: [], lastEdited: '', isArchived: false };
-        vi.mocked(StorageService.get).mockReturnValue([initialNote]);
+        vi.mocked(StorageService.get).mockImplementation(async (key: string) => {
+            if (key === 'notes-app-data') return [initialNote];
+            return [];
+        });
         const { result } = renderHook(() => useNotesManager());
 
-        act(() => {
+        await act(async () => {
+            await Promise.resolve();
+        });
+
+        await act(async () => {
             result.current.updateNote('1', { title: 'New' });
         });
 
@@ -62,12 +93,19 @@ describe('useNotesManager', () => {
         expect(StorageService.set).toHaveBeenCalledWith('notes-app-data', expect.arrayContaining([expect.objectContaining({ title: 'New' })]));
     });
 
-    it('should delete a note', () => {
+    it('should delete a note', async () => {
         const initialNote = { id: '1', title: 'Delete me', content: '', tags: [], lastEdited: '', isArchived: false };
-        vi.mocked(StorageService.get).mockReturnValue([initialNote]);
+        vi.mocked(StorageService.get).mockImplementation(async (key: string) => {
+            if (key === 'notes-app-data') return [initialNote];
+            return [];
+        });
         const { result } = renderHook(() => useNotesManager());
 
-        act(() => {
+        await act(async () => {
+            await Promise.resolve();
+        });
+
+        await act(async () => {
             result.current.deleteNote('1');
         });
 
@@ -75,12 +113,16 @@ describe('useNotesManager', () => {
         expect(StorageService.set).toHaveBeenCalledWith('notes-app-data', []);
     });
 
-    it('should add a tag', () => {
-        vi.mocked(StorageService.get).mockReturnValue([]);
+    it('should add a tag', async () => {
+        vi.mocked(StorageService.get).mockResolvedValue([]);
         const { result } = renderHook(() => useNotesManager());
 
+        await act(async () => {
+            await Promise.resolve();
+        });
+
         let newTag;
-        act(() => {
+        await act(async () => {
             newTag = result.current.addTag('Work');
         });
 
@@ -89,16 +131,20 @@ describe('useNotesManager', () => {
         expect(StorageService.set).toHaveBeenCalledWith('notes-app-tags', [newTag]);
     });
 
-    it('should not add duplicate tags', () => {
+    it('should not add duplicate tags', async () => {
         const existingTag = { id: 't1', name: 'Work' };
-        vi.mocked(StorageService.get).mockImplementation((key: string) => {
+        vi.mocked(StorageService.get).mockImplementation(async (key: string) => {
             if (key === 'notes-app-tags') return [existingTag];
             return [];
         });
         const { result } = renderHook(() => useNotesManager());
 
+        await act(async () => {
+            await Promise.resolve();
+        });
+
         let returnedTag;
-        act(() => {
+        await act(async () => {
             returnedTag = result.current.addTag('work'); // Case-insensitive
         });
 
@@ -106,12 +152,19 @@ describe('useNotesManager', () => {
         expect(returnedTag).toEqual(existingTag);
     });
 
-    it('should update a tag', () => {
+    it('should update a tag', async () => {
         const initialTag = { id: 't1', name: 'OldTag' };
-        vi.mocked(StorageService.get).mockReturnValue([initialTag]);
+        vi.mocked(StorageService.get).mockImplementation(async (key: string) => {
+            if (key === 'notes-app-tags') return [initialTag];
+            return [];
+        });
         const { result } = renderHook(() => useNotesManager());
 
-        act(() => {
+        await act(async () => {
+            await Promise.resolve();
+        });
+
+        await act(async () => {
             result.current.updateTag('t1', 'NewTag');
         });
 
@@ -119,7 +172,7 @@ describe('useNotesManager', () => {
         expect(StorageService.set).toHaveBeenCalledWith('notes-app-tags', expect.arrayContaining([expect.objectContaining({ name: 'NewTag' })]));
     });
 
-    it('should delete a tag and remove it from notes', () => {
+    it('should delete a tag and remove it from notes', async () => {
         const tagId = 't1';
         const tag = { id: tagId, name: 'TagToDelete' };
         const noteWithTag = {
@@ -131,7 +184,7 @@ describe('useNotesManager', () => {
             isArchived: false
         };
 
-        vi.mocked(StorageService.get).mockImplementation((key: string) => {
+        vi.mocked(StorageService.get).mockImplementation(async (key: string) => {
             if (key === 'notes-app-tags') return [tag];
             if (key === 'notes-app-data') return [noteWithTag];
             return [];
@@ -139,7 +192,11 @@ describe('useNotesManager', () => {
 
         const { result } = renderHook(() => useNotesManager());
 
-        act(() => {
+        await act(async () => {
+            await Promise.resolve();
+        });
+
+        await act(async () => {
             result.current.deleteTag(tagId);
         });
 

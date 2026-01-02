@@ -1,58 +1,70 @@
 import { useState, useEffect } from 'react';
 import type { Note, Tag } from '../types/note';
-import { StorageService, STORAGE_KEYS } from '../services/storage';
-import { NotesSchema, TagsSchema } from '../schemas';
+import { useSettings } from '../context/SettingsContext';
+import { NoteService } from '../services/NoteService';
+import { TagService } from '../services/TagService';
+import { useNotification } from '../context/NotificationContext';
+import { NoteRepository } from '../services/repositories/NoteRepository';
+import { TagRepository } from '../services/repositories/TagRepository';
 
 export const useNotesManager = () => {
-    const [notes, setNotes] = useState<Note[]>(() =>
-        StorageService.get<Note[]>(STORAGE_KEYS.NOTES, [], NotesSchema)
-    );
-
-    const [tags, setTags] = useState<Tag[]>(() =>
-        StorageService.get<Tag[]>(STORAGE_KEYS.TAGS, [], TagsSchema)
-    );
+    const { storageMode, directoryPath, isInitializing: isSettingsInitializing, needsPermission } = useSettings();
+    const [notes, setNotes] = useState<Note[]>([]);
+    const [tags, setTags] = useState<Tag[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const { notify } = useNotification();
 
     useEffect(() => {
-        StorageService.set(STORAGE_KEYS.NOTES, notes);
-    }, [notes]);
+        if (isSettingsInitializing || (storageMode === 'files' && needsPermission)) {
+            setIsLoading(true);
+            return;
+        }
+
+        const loadInitialData = async () => {
+            setIsLoading(true);
+            try {
+                const [savedNotes, savedTags] = await Promise.all([
+                    NoteRepository.getAll(),
+                    TagRepository.getAll()
+                ]);
+                setNotes(savedNotes);
+                setTags(savedTags);
+            } catch (error) {
+                console.error('Failed to load notes or tags:', error);
+                notify('error', 'Falha ao carregar notas. Verifique as permissões de acesso.');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        loadInitialData();
+    }, [isSettingsInitializing, storageMode, directoryPath, needsPermission]);
 
     useEffect(() => {
-        StorageService.set(STORAGE_KEYS.TAGS, tags);
-    }, [tags]);
+        if (!isLoading && !isSettingsInitializing && !(storageMode === 'files' && needsPermission)) {
+            NoteRepository.saveAll(notes);
+        }
+    }, [notes, isLoading, isSettingsInitializing, storageMode, needsPermission]);
+
+    useEffect(() => {
+        if (!isLoading && !isSettingsInitializing && !(storageMode === 'files' && needsPermission)) {
+            TagRepository.saveAll(tags);
+        }
+    }, [tags, isLoading, isSettingsInitializing, storageMode, needsPermission]);
 
     const createNote = () => {
-        const newNote: Note = {
-            id: crypto.randomUUID(),
-            title: '',
-            content: '',
-            tags: [],
-            lastEdited: new Date().toISOString(),
-            isArchived: false,
-        };
+        const newNote = NoteService.createDefaultNote();
         setNotes((prev) => [newNote, ...prev]);
         return newNote;
     };
 
-    const getTagName = (tagId: string) => {
-        return tags.find((t) => t.id === tagId)?.name || '';
-    };
+    const getTagName = (tagId: string) => TagService.getName(tags, tagId);
 
     const updateNote = (id: string, updates: Partial<Note>) => {
-        setNotes((prev) =>
-            prev.map((n) =>
-                n.id === id
-                    ? {
-                        ...n,
-                        ...updates,
-                        lastEdited: updates.lastEdited || new Date().toISOString(),
-                    }
-                    : n
-            )
-        );
+        setNotes((prev) => NoteService.update(prev, id, updates));
     };
 
     const deleteNote = (id: string) => {
-        setNotes((prev) => prev.filter((n) => n.id !== id));
+        setNotes((prev) => NoteService.delete(prev, id));
     };
 
     const archiveNote = (id: string) => {
@@ -64,31 +76,27 @@ export const useNotesManager = () => {
     };
 
     const addTag = (name: string): Tag => {
-        const existing = tags.find((t) => t.name.toLowerCase() === name.toLowerCase());
+        const existing = TagService.findByName(tags, name);
         if (existing) return existing;
 
-        const newTag: Tag = { id: crypto.randomUUID(), name };
+        const newTag = TagService.create(name);
         setTags((prev) => [...prev, newTag]);
         return newTag;
     };
 
     const updateTag = (id: string, name: string) => {
-        setTags((prev) => prev.map((t) => (t.id === id ? { ...t, name } : t)));
+        setTags((prev) => TagService.update(prev, id, name));
     };
 
     const deleteTag = (id: string) => {
-        setTags((prev) => prev.filter((t) => t.id !== id));
-        setNotes((prev) =>
-            prev.map((n) => ({
-                ...n,
-                tags: n.tags.filter((tId) => tId !== id),
-            }))
-        );
+        setTags((prev) => TagService.delete(prev, id));
+        setNotes((prev) => NoteService.removeTagReference(prev, id));
     };
 
     return {
         notes,
         tags,
+        isLoading,
         createNote,
         updateNote,
         deleteNote,

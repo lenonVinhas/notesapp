@@ -6,6 +6,7 @@ import { useFilteredNotes } from '../hooks/useFilteredNotes';
 import { useLanguage } from '../context/LanguageContext';
 import { NoteCard } from './notes/NoteCard';
 import { NoteListEmptyState } from './notes/NoteListEmptyState';
+import { Button } from './ui/Button';
 
 export const NoteList: React.FC = () => {
   const { createNote } = useNotesData();
@@ -21,13 +22,13 @@ export const NoteList: React.FC = () => {
   return (
     <div className="w-full md:w-80 border-r border-zinc-200 h-full flex flex-col bg-white overflow-hidden shrink-0">
       <div className="p-5">
-        <button
+        <Button
           onClick={handleCreateNote}
-          className="w-full flex items-center justify-center gap-2.5 bg-zinc-900 text-white py-3 rounded-xl text-sm font-semibold hover:bg-zinc-800 transition-all shadow-md hover:shadow-xl active:scale-95"
+          className="w-full gap-2.5 py-6 shadow-md hover:shadow-xl"
         >
           <Plus className="w-4 h-4 stroke-[3px]" />
           {t('createNewNote')}
-        </button>
+        </Button>
       </div>
 
       <div className="flex-1 overflow-y-auto">

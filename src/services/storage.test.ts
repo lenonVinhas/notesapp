@@ -11,31 +11,31 @@ describe('StorageService', () => {
         vi.spyOn(console, 'error').mockImplementation(() => { });
     });
 
-    it('should set and get data correctly', () => {
-        StorageService.set(key, data);
+    it('should set and get data correctly', async () => {
+        await StorageService.set(key, data);
         expect(localStorage.setItem).toHaveBeenCalledWith(key, JSON.stringify(data));
 
         // Manual mock behavior for get
         vi.spyOn(localStorage, 'getItem').mockReturnValue(JSON.stringify(data));
 
-        const retrieved = StorageService.get(key, {});
+        const retrieved = await StorageService.get(key, {});
         expect(retrieved).toEqual(data);
     });
 
-    it('should return default value if key does not exist', () => {
+    it('should return default value if key does not exist', async () => {
         vi.spyOn(localStorage, 'getItem').mockReturnValue(null);
-        const retrieved = StorageService.get(key, { default: true });
+        const retrieved = await StorageService.get(key, { default: true });
         expect(retrieved).toEqual({ default: true });
     });
 
-    it('should return default value if JSON is invalid', () => {
+    it('should return default value if JSON is invalid', async () => {
         vi.spyOn(localStorage, 'getItem').mockReturnValue('invalid-json');
-        const retrieved = StorageService.get(key, { default: true });
+        const retrieved = await StorageService.get(key, { default: true });
         expect(retrieved).toEqual({ default: true });
     });
 
-    it('should remove item', () => {
-        StorageService.remove(key);
+    it('should remove item', async () => {
+        await StorageService.remove(key);
         expect(localStorage.removeItem).toHaveBeenCalledWith(key);
     });
 });

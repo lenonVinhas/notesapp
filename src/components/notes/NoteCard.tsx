@@ -3,6 +3,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useNotesData } from '../../context/NotesDataContext';
 import { useDateFormatter } from '../../utils/date';
 import { cn } from '../../utils/cn';
+import { Badge } from '../ui/Badge';
 
 interface NoteCardProps {
   note: {
@@ -36,11 +37,11 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note, isActive, onClick }) =
         {note.title || t('titlePlaceholder')}
       </h3>
       
-      <div className="flex flex-wrap gap-1.5">
+      <div className="flex flex-wrap gap-1.5 font-medium">
         {note.tags.map(tagId => (
-          <span key={tagId} className="flex items-center gap-1 text-[10px] text-zinc-500 bg-zinc-100 px-2 py-0.5 rounded-full font-medium">
+          <Badge key={tagId} variant="secondary" className="text-[10px] px-2 py-0 h-4 leading-none border-none text-zinc-500">
             {getTagName(tagId)}
-          </span>
+          </Badge>
         ))}
       </div>
 
