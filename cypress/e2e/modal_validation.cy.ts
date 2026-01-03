@@ -6,7 +6,7 @@ describe('Modal Validation', () => {
     });
 
     it('should show the correct content in the Settings Modal', () => {
-        cy.get('button[aria-label="Settings"], button[aria-label="Configurações"]').click();
+        cy.get('a[aria-label="Settings"], a[aria-label="Configurações"]').click();
 
         cy.get('[role="dialog"]').within(() => {
             cy.contains(/Settings|Configurações/i).should('be.visible');

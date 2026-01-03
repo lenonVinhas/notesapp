@@ -15,15 +15,8 @@ export const DeleteTagModal: React.FC = () => {
   const match = useMatch('/tags/:tagId/delete');
   const params = useParams();
   
-  if (!match || !params.tagId) return null;
-  
-  const tagId = params.tagId;
+  const tagId = params.tagId || '';
   const tag = tags.find(t => t.id === tagId);
-  
-  if (!tag) {
-    closeDeleteTagModal();
-    return null;
-  }
 
   const affectedNotesCount = allNotes.filter(note => note.tags.includes(tagId)).length;
 
@@ -34,9 +27,9 @@ export const DeleteTagModal: React.FC = () => {
 
   return (
     <Modal
-      isOpen={true}
+      isOpen={!!match && !!tag}
       onClose={closeDeleteTagModal}
-      title={`${t('deleteTag')} "${tag.name}"`}
+      title={`${t('deleteTag')} "${tag?.name || ''}"`}
       description={t('deleteTagConfirm')}
       footer={
         <>

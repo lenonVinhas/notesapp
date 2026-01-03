@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from '../components/Sidebar';
 import { Header } from '../components/Header';
+import { SettingsView } from '../components/settings/SettingsView';
 import { DeleteModal } from '../components/DeleteModal';
 import { NotesDataProvider } from '../context/NotesDataContext';
 import { NotesUIProvider } from '../context/NotesUIContext';
@@ -25,6 +26,7 @@ export const RootLayout: React.FC = () => {
           </div>
           <DeleteModal />
           <DeleteTagModal />
+          <SettingsView />
         </div>
       </NotesDataProvider>
     </NotesUIProvider>

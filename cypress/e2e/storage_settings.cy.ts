@@ -6,7 +6,7 @@ describe('Settings and Storage', () => {
 
     it('should open and close the settings modal', () => {
         // Open settings using accessible label
-        cy.get('button[aria-label="Settings"], button[aria-label="Configurações"]').first().click();
+        cy.get('a[aria-label="Settings"], a[aria-label="Configurações"]').first().click();
 
         // Modal header
         cy.get('h2').contains(/Settings|Configurações/).should('be.visible');
@@ -17,7 +17,7 @@ describe('Settings and Storage', () => {
     });
 
     it('should show storage options and allow interacting with local folder', () => {
-        cy.get('button[aria-label="Settings"], button[aria-label="Configurações"]').first().click();
+        cy.get('a[aria-label="Settings"], a[aria-label="Configurações"]').first().click();
 
         // Check if options are visible (using partial text or regex)
         cy.get('p').contains(/Browser Storage|Salvar no Navegador/).should('be.visible');
