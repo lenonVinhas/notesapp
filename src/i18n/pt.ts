@@ -54,4 +54,7 @@ export const pt = {
     reauthorizeDescription: 'O acesso à sua pasta local foi interrompido. Clique para restaurar.',
     syncing: 'Sincronizando...',
     noneSelected: 'Nenhuma selecionada',
+    selectedFolder: 'Pasta selecionada',
+    aboutNotesApp: 'Sobre o NotesApp',
+    privacyDescription: 'Suas notas são armazenadas localmente para total privacidade. Nossos servidores nunca veem seus textos ou arquivos.',
 };

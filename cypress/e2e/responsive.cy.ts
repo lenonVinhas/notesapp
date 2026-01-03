@@ -29,4 +29,19 @@ describe('Responsive Layout', () => {
         cy.get('.fixed.inset-0').click({ force: true });
         cy.get('aside').should('not.be.visible');
     });
+
+    it('should show mobile layout on large phones (500px)', () => {
+        cy.viewport(500, 800);
+        cy.visit('/');
+
+        // Menu button should be visible (confirming mobile layout)
+        cy.get('button').find('svg.lucide-menu').should('exist');
+
+        // Open sidebar first
+        cy.get('button').find('svg.lucide-menu').parent().click();
+
+        // Opening settings should show mobile immersive view (h1 instead of h2 modal title)
+        cy.get('a[aria-label="Settings"], a[aria-label="Configurações"]').first().click();
+        cy.get('h1').contains(/Settings|Configurações/).should('be.visible');
+    });
 });

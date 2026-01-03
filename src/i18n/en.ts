@@ -54,4 +54,7 @@ export const en = {
     reauthorizeDescription: 'Access to your local folder was interrupted. Click to restore.',
     syncing: 'Syncing...',
     noneSelected: 'None selected',
+    selectedFolder: 'Selected folder',
+    aboutNotesApp: 'About NotesApp',
+    privacyDescription: 'Your notes are stored locally for total privacy. Our servers never see your texts or files.',
 };

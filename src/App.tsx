@@ -30,6 +30,7 @@ const router = createBrowserRouter([
           { path: ":noteId/delete", element: <NoteEditor /> },
           { path: "archived/:noteId/delete", element: <NoteEditor /> },
           { path: "tags/:tagId/:noteId/delete", element: <NoteEditor /> },
+          { path: "settings", element: <NoNoteSelected /> },
         ]
       }
     ]

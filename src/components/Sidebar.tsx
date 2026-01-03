@@ -6,7 +6,6 @@ import { useLanguage } from '../context/LanguageContext';
 import { useSettings } from '../context/SettingsContext';
 import { cn } from '../utils/cn';
 import { Button } from './ui/Button';
-import { SettingsModal } from './settings/SettingsModal';
 import { SidebarNavItem } from './sidebar/SidebarNavItem';
 import { SidebarTagList } from './sidebar/SidebarTagList';
 import { SidebarStorageBanner } from './sidebar/SidebarStorageBanner';
@@ -21,7 +20,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { t } = useLanguage();
   const { storageMode, needsPermission, requestPermission } = useSettings();
   const { search } = useLocation();
-  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
 
   return (
     <>
@@ -80,23 +78,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               <SidebarStorageBanner requestPermission={requestPermission} />
             )}
 
-            <Button
-              variant="ghost"
-              onClick={() => setIsSettingsOpen(true)}
-              aria-label={t('settings')}
-              className="w-full justify-start gap-3 px-4 py-2.5 text-sm font-semibold text-zinc-500"
-            >
-              <SettingsIcon className="w-4 h-4 text-zinc-400" />
-              {t('settings')}
-            </Button>
+            <SidebarNavItem
+              to="/settings"
+              icon={SettingsIcon}
+              label={t('settings')}
+              onClick={onClose}
+            />
           </div>
         </div>
       </aside>
 
-      <SettingsModal 
-        isOpen={isSettingsOpen} 
-        onClose={() => setIsSettingsOpen(false)} 
-      />
+      {/* SettingsModal removed in favor of routing */}
     </>
   );
 };

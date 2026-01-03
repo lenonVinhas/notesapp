@@ -11,11 +11,10 @@ export const DeleteModal: React.FC = () => {
   const { isDeleting, activeNoteId, closeDeleteModal, setActiveNoteId } = useNotesUI();
   const { t } = useLanguage();
 
-  if (!isDeleting || !activeNoteId) return null;
-
-  const note = allNotes.find(n => n.id === activeNoteId);
+  const note = allNotes.find(n => n.id === activeNoteId!);
 
   const handleDelete = () => {
+    if (!activeNoteId) return;
     deleteNote(activeNoteId);
     setActiveNoteId(null);
     closeDeleteModal();
@@ -23,7 +22,7 @@ export const DeleteModal: React.FC = () => {
 
   return (
     <Modal
-      isOpen={isDeleting}
+      isOpen={isDeleting && !!activeNoteId}
       onClose={closeDeleteModal}
       title={`${t('deleteNote')} "${note?.title || t('titlePlaceholder')}"`}
       description={t('confirmDelete')}
