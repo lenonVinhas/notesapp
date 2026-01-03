@@ -91,7 +91,9 @@ export const SettingsContent: React.FC = () => {
                 ) : (
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1">
-                      <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">{t('noneSelected')}</p>
+                      <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                        {directoryPath ? t('selectedFolder') : t('noneSelected')}
+                      </p>
                       <p className="text-sm font-medium text-zinc-600 break-all">
                         {directoryPath || t('noneSelected')}
                       </p>
