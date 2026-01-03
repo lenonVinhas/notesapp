@@ -14,6 +14,7 @@ export const DeleteModal: React.FC = () => {
   const note = allNotes.find(n => n.id === activeNoteId!);
 
   const handleDelete = () => {
+    if (!activeNoteId) return;
     deleteNote(activeNoteId);
     setActiveNoteId(null);
     closeDeleteModal();
